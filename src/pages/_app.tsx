@@ -27,11 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       });
   }, []);
 
-  // Provide `liff` object and `liffError` object
-  // to page component as property
-  pageProps.liff = liffObject;
-  pageProps.liffError = liffError;
-  return <Component {...pageProps} />;
+  return <Component liff={liffObject} liffError={liffError} {...pageProps} />;
 }
 
 export default MyApp;
