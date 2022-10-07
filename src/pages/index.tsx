@@ -7,16 +7,22 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   liff,
   liffError
 }) => {
+  if (new Date("2022-10-20T12:00:00+0900") > new Date()) {
+    // 予約開始前
+    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
+  }
+  // 予約開始後
+
   return (
     <div>
       <Head>
-        <title>LIFF App</title>
+        <title>農工祭予約システム</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <Timer />
+        <div className="text-2xl text-center">予約開始！</div>
       </main>
     </div>
   );
