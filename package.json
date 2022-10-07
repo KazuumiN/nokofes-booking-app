@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "npm run prisma generate",
-    "postinstall": "npm run prisma generate"
+    "prebuild": "npx prisma generate",
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.3",
