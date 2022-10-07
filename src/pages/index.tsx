@@ -1,7 +1,7 @@
 import type { Liff } from "@line/liff";
 import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import Timer from "components/Timer";
 
 const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   liff,
@@ -15,24 +15,8 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1>create-liff-app</h1>
-        {liff && <p>LIFF init succeeded.</p>}
-        {liffError && (
-          <>
-            <p>LIFF init failed.</p>
-            <p>
-              <code>{liffError}</code>
-            </p>
-          </>
-        )}
-        <a
-          href="https://developers.line.biz/ja/docs/liff/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          LIFF Documentation
-        </a>
+      <main>
+        <Timer />
       </main>
     </div>
   );
