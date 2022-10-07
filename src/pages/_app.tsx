@@ -2,8 +2,11 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import type { Liff } from "@line/liff";
 import { useState, useEffect } from "react";
+import { SessionProvider } from 'next-auth/react';
+import { Session } from 'next-auth'
+import Layout from "./layout";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
 
@@ -27,7 +30,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       });
   }, []);
 
-  return <Component liff={liffObject} liffError={liffError} {...pageProps} />;
+  return (
+    <SessionProvider session={pageProps.session}>
+      <Layout liff={liffObject} liffError={liffError} >
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
+  )
 }
 
 export default MyApp;
