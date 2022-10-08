@@ -14,6 +14,13 @@ const Layout: NextPage<{ liff: Liff | null; liffError: string | null; children: 
     // 未ログイン
     if (liff?.isInClient()) {
       // liff.getAccessToken()を使ってcredentialsログイン
+      // @ts-ignore
+      liff.getAccessToken().then((accessToken) => {
+        signIn("credentials", {
+          accessToken,
+          callbackUrl: `${window.location.origin}/`,
+        });
+      });
     } else {
       // メッセージを表示後googleログイン
       return (
