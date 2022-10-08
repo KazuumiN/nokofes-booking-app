@@ -10,12 +10,13 @@ const { GOOGLE_ID, GOOGLE_SECRET, secret } = process.env;
 if (!GOOGLE_ID) throw new Error('You must provide GOOGLE_ID env var.');
 if (!GOOGLE_SECRET) throw new Error('You must provide GOOGLE_SECRET env var.');
 
-const getLineId = async (accessToken: string) => {
-  const url = `https://api.line.me/oauth2/v2.1/verify?access_token=${accessToken}`
-  const token = await fetch(url, {
+const getLineProfile = async (accessToken: string) => {
+  const url = `https://api.line.me/v2/profile`
+  const profile = await fetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
     },
   })
     .then((response) => {
@@ -24,8 +25,10 @@ const getLineId = async (accessToken: string) => {
       } else {
         throw new Error('accessTokenの検証に失敗しました')
       }
-    })
-  return token
+    }
+  )
+  console.log(profile)
+  return profile
 }
 
 export default NextAuth({
@@ -41,13 +44,13 @@ export default NextAuth({
         accessToken: { label: "Access Token", type: "text", placeholder: "Enter your access token" },
       },
       async authorize(credentials) {
+        console.log(credentials)
         if (!credentials) {
           throw new Error('No credentials provided')
         }
-        const token = await getLineId(credentials.accessToken)
+        const token = await getLineProfile(credentials.accessToken)
         const user = {
-          id: token.sub,
-          name: token.name,
+          id: token.userId,
         }
         return user
       },
