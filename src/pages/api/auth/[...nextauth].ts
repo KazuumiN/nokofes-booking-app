@@ -22,7 +22,7 @@ export default NextAuth({
     // @ts-ignore
     async signIn(user, account, profile) {
       // ユーザーのメールアドレスが@st.go.tuat.ac.jpで終わらない場合はログインを拒否する
-      if (user.email.endsWith("@st.go.tuat.ac.jp")) {
+      if (user.user.email.endsWith("@st.go.tuat.ac.jp")) {
         return true;
       }
       return false; // TODO: ちゃんとしたエラーメッセージを表示する
