@@ -1,4 +1,4 @@
-import { entranceProps } from "../types"
+import { entranceProps } from "../../types"
 
 interface Props {
   id: string;

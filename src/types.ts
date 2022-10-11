@@ -25,4 +25,5 @@ export type productType = {
   price: number
   stock: number
   limit: number
+  days?: Array<string>
 }

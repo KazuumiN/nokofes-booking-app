@@ -1,22 +1,22 @@
-import ProductCard from "../components/ProductCard";
-import { shoppingProps, productType } from "../types"
+import ProductCard, { BeerCard } from "./ProductCard";
+import { shoppingProps, productType } from "../../types"
 
 interface Props {
   id: string;
   data: shoppingProps;
+  beerProducts: any;
   products: productType[];
-  returnToHome: () => void;
   closeForm: () => void;
 }
 
-const ShoppingForm = ({ id, data, products, returnToHome, closeForm }: Props) => {
+const ShoppingForm = ({ id, data, products, beerProducts, closeForm }: Props) => {
   // TODO: dataの中身は標準で表示させるのみ。新しいstateも作る。
   const cancel = () => {
     // TODO: 記入済みのデータが消える警告モーダルを表示
     if (data.reserved) {
       closeForm();
     } else {
-      returnToHome();
+      // TODO: ホームに戻る
     }
   }
   const submit = () => {
@@ -34,16 +34,17 @@ const ShoppingForm = ({ id, data, products, returnToHome, closeForm }: Props) =>
     <div className="flex flex-col">
       <h1 className="text-3xl font-bold">{data.reserved ? "予約の修正" : "商品の予約"}</h1>
       <div className="flex flex-col space-y-8">
+        <BeerCard {...beerProducts} />
         {products.map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}
       </div>
-      <h2 className="mt-8 text-xl font-semibold">
+      {/* <h2 className="mt-8 text-xl font-semibold">
         お受け渡し日時
       </h2>
       <p className="text-sm mt-2 whitespace-pre-wrap">
         {"シクラメンをご予約の方は11月13,14日のみ、\n味噌または乳酸菌をご予約の方は11月14日のみをお選びください\n午前か午後かに関しましては厳密でなくとも大丈夫です。"}
-      </p>
+      </p> */}
       <section
         aria-labelledby="summary-heading"
         className="my-16 rounded-lg bg-gray-50 px-4 py-6"

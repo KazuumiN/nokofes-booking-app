@@ -1,18 +1,23 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import type { Liff } from "@line/liff";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { SessionProvider } from 'next-auth/react';
 import { Session } from 'next-auth'
 import Layout from "./layout";
+import LiffContext from "store/LiffContext";
+import Head from "next/head";
+import Timer from "components/Timer";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Execute liff.init() when the app is initialized
+  // liff.init()を実行するときにアプリが初期化される
   useEffect(() => {
-    // to avoid `window is not defined` error
+    // ウィンドウが定義されていないエラーを回避する
     import("@line/liff")
       .then((liff) => liff.default)
       .then((liff) => {
@@ -30,11 +35,25 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
       });
   }, []);
 
+  // LIFFアプリ以外からアクセスされた場合はトップページにリダイレクト
+  useEffect(() => {
+    if (router.pathname.startsWith("/liff") && !liffObject?.isInClient()) {
+      router.push("/");
+    }
+  }, [liffObject, router]);
+
+  // TODO: 最終的にこれを反映する
+  // if (new Date("2022-10-20T12:00:00+0900") > new Date()) {
+  //   // 予約開始前はタイマーを表示する早期リターン
+  //   return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
+  // }
   return (
     <SessionProvider session={pageProps.session}>
-      <Layout liff={liffObject} liffError={liffError} >
-        <Component {...pageProps} />
-      </Layout>
+      <LiffContext.Provider value={liffObject}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </LiffContext.Provider>
     </SessionProvider>
   )
 }

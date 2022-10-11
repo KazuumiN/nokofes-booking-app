@@ -1,13 +1,12 @@
-import { entranceProps } from "../types";
+import { entranceProps } from "../../types";
 
 interface Props {
   id: string;
   data: entranceProps;
-  returnToHome: () => void;
   openForm: () => void;
 }
 
-const EntranceView = ({ id, data, returnToHome, openForm }: Props) => {
+const EntranceView = ({ id, data, openForm }: Props) => {
   const convaertDate = (date: number) => {
     switch (date) {
       case 11:
@@ -42,7 +41,6 @@ const EntranceView = ({ id, data, returnToHome, openForm }: Props) => {
         <button
           type="button"
           className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-          onClick={returnToHome}
         >
           トップに戻る
         </button>
