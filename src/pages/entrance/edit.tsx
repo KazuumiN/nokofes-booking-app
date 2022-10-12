@@ -75,7 +75,10 @@ const EntranceEdit = () => {
                 <Select
                   options={options}
                   defaultValue={data.reserved ? options[data.eleventh] : options[0]}
-                  onChange={(e) => setEleventh(e)}
+                  onChange={(e) => {
+                    // @ts-ignore
+                    return setEleventh(e)
+                  }}
                   isSearchable={false}
                 />
               </div>
@@ -87,7 +90,10 @@ const EntranceEdit = () => {
                 <Select
                   options={options}
                   defaultValue={data.reserved ? options[data.twelfth] : options[0]}
-                  onChange={(e) => setTwelfth(e)}
+                  onChange={(e) => {
+                    // @ts-ignore
+                    return setTwelfth(e)
+                  }}
                   isSearchable={false}
                 />
               </div>
@@ -99,7 +105,10 @@ const EntranceEdit = () => {
                 <Select
                   options={options}
                   defaultValue={data.reserved ? options[data.thirteenth] : options[0]}
-                  onChange={(e) => setThirteenth(e)}
+                  onChange={(e) => {
+                    // @ts-ignore
+                    return setThirteenth(e)}
+                  }
                   isSearchable={false}
                 />
               </div>
@@ -113,7 +122,10 @@ const EntranceEdit = () => {
                     name="eleventh"
                     type="checkbox"
                     checked={eleventh != null ? eleventh : data.reserved ? data.eleventh : false}
-                    onChange={(e) => setEleventh(e.target.checked)}
+                    onChange={(e) => {
+                      // @ts-ignore
+                      return setEleventh(e.target.checked)}
+                    }
                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
                 </div>
@@ -131,7 +143,10 @@ const EntranceEdit = () => {
                     name="twelfth"
                     type="checkbox"
                     checked={twelfth != null ? twelfth : data.reserved ? data.twelfth : false}
-                    onChange={(e) => setTwelfth(e.target.checked)}
+                    onChange={(e) => {
+                      // @ts-ignore
+                      return setTwelfth(e.target.checked)}
+                    }
                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
                 </div>
@@ -149,7 +164,10 @@ const EntranceEdit = () => {
                     name="thirteenth"
                     type="checkbox"
                     checked={thirteenth != null ? thirteenth : data.reserved ? data.thirteenth : false}
-                    onChange={(e) => setThirteenth(e.target.checked)}
+                    onChange={(e) => {
+                      // @ts-ignore
+                      return setThirteenth(e.target.checked)}
+                    }
                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
                 </div>
@@ -172,7 +190,10 @@ const EntranceEdit = () => {
           <Select
             options={accompaniersOptions}
             defaultValue={data.reserved ? accompaniersOptions[data.accompaniers] : options[0]}
-            onChange={(e) => setAccompaniers(e)}
+            onChange={(e) => {
+              // @ts-ignore
+              return setAccompaniers(e)}
+            }
           />
         </div>
       )}

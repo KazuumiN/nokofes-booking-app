@@ -22,7 +22,7 @@ export const BeerCard = ({originalCount, setOriginalCount, sourCount, setSourCou
           </div>
         </div>
         <div className="flex flex-col space-y-2">
-          {props.items.map((item, index) => {
+          {props.items.map((item: any, index: number) => {
             const isLast = props.items.length - 1 === index;
             return (
             <>
