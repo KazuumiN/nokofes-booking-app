@@ -6,6 +6,8 @@ import { useState } from "react";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
+
+  const regexp = /^[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
   
   const handleSubmit = async () => {
     setIsSigningIn(true);
@@ -30,7 +32,7 @@ const SignIn = () => {
           id="email"
           name="email"
           autoComplete="email"
-          className="w-5/6 rounded-sm border-b-2"
+          className="w-5/6 rounded-sm border-b-2 px-1"
           required
           autoFocus
           value={email}
@@ -46,7 +48,7 @@ const SignIn = () => {
         type="button"
         className="flex justify-center items-center space-x-4 rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-slate-500"
         onClick={handleSubmit}
-        disabled={!email||isSigningIn}
+        disabled={!regexp.test(email)||isSigningIn}
       >ログインする <Spinner shown={isSigningIn} /></button>
     </div>
   );
