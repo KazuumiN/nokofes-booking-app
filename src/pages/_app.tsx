@@ -34,14 +34,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
           });
       });
   }, []);
-
-  // LIFFアプリ以外からアクセスされた場合はトップページにリダイレクト
-  useEffect(() => {
-    if (router.pathname.startsWith("/liff") && !liffObject?.isInClient()) {
-      router.push("/");
-    }
-  }, [liffObject, router]);
-
+  
   // TODO: 最終的にこれを反映する
   // if (new Date("2022-10-20T12:00:00+0900") > new Date()) {
   //   // 予約開始前はタイマーを表示する早期リターン

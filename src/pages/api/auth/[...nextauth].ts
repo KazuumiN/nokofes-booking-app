@@ -112,6 +112,19 @@ function text({ url, host }: { url: string; host: string }) {
   return `農工祭予約システムにサインインする。\n${url}\n\n`
 }
 
+const sendVerificationViaGAS = async (email: string, url: string) => {
+  const endpoint = process.env.GAS_ENDPOINT
+  const params = {
+    email,
+    url,
+  }
+  const query = Object.keys(params)
+  // @ts-ignore
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
+  await fetch(`${endpoint}?${query}`)
+}
+
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -123,11 +136,7 @@ export const authOptions = {
         url,
         provider: { server, from },
       }) {
-        return sendVerificationRequest({
-          identifier: email,
-          url,
-          provider: { server, from },
-        })
+        return sendVerificationViaGAS(email, url)
       },
     }),
     // GoogleProvider({
@@ -153,6 +162,13 @@ export const authOptions = {
       },
     }),
   ],
+  pages: {
+    // signIn: '/auth/signin',
+    // signOut: '/auth/signout',
+    // error: '/auth/error', // Error code passed in query string as ?error=
+    verifyRequest: '/auth/verify-request', // (used for check email message)
+    // newUser: null // If set, new users will be directed here on first sign in
+  },
   session: {
     strategy: 'jwt',
     // Seconds - How long until an idle session expires and is no longer valid.
