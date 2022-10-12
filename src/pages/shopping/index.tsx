@@ -1,9 +1,12 @@
 
 // @ts-nocheck
 import { useState } from "react";
-import ShoppingForm from "components/shopping/ShoppingForm";
+import ShoppingForm from "pages/shopping/edit";
 import { shoppingProps, productType } from "types";
 import { useSession } from 'next-auth/react'; 
+import useSWR from "swr";
+// @ts-ignore
+const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 
 interface Props {
@@ -11,24 +14,11 @@ interface Props {
   shoppingData: shoppingProps;
 }
 const Wrapper = () => {
-  const { data: session } = useSession();
-  const id = session?.user?.idNumber
-  const shoppingData = {
-    reserved: false,
-    whenToBuy: "11-12_am",
-    items: [
-      {
-        id: 1,
-        amount: 5,
-      },
-      {
-        id: 3,
-        amount: 2,
-      },
-    ],
-  }
+  const { data, error } = useSWR('/api/shopping', fetcher);
+  if (error) return <p>Error: {error.message}</p>;
+  if (!data) return <p>Loading...</p>;
   return (
-    <Shopping id={id} shoppingData={shoppingData} />
+    <Shopping shoppingData={data} />
   )
 }
 
@@ -101,7 +91,7 @@ const products: productType[] = [
   },
 ]
 
-const Shopping = ({ id, shoppingData }: Props) => {
+const Shopping = ({ shoppingData }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const openForm = () => setIsEditing(true);
   const closeForm = () => setIsEditing(false);
@@ -109,7 +99,6 @@ const Shopping = ({ id, shoppingData }: Props) => {
     <>
       {!shoppingData.reserved || isEditing ? (
         <ShoppingForm
-          id={id}
           data={shoppingData}
           products={products}
           beerProducts={beerProducts}

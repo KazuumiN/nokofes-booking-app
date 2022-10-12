@@ -1,18 +1,20 @@
 import { NextPage } from "next";
 import type { Liff } from "@line/liff";
+import SignIn from "components/Signin";
 import LiffContext from "store/LiffContext";
-import React from "react";
+import { useContext, ReactNode} from "react";
 import { useSession, signIn, signOut } from "next-auth/react"
 
-const Layout: NextPage<{ children: React.ReactNode }> = ({
+const Layout: NextPage<{ children: ReactNode }> = ({
   children
 }) => {
   const { data: session, status } = useSession()
-  const liff = React.useContext(LiffContext);
-
+  const liff = useContext(LiffContext);
   if (status === "loading") {
-    return <div>Loading...</div>
+    return <div className=" text-center">読み込み中...</div>
   }
+
+
 
   if (!session) {
     // 未ログイン
@@ -28,14 +30,11 @@ const Layout: NextPage<{ children: React.ReactNode }> = ({
         <div>ログイン中...</div>
       )
     } else {
-      // メッセージを表示後googleログイン
+      // メッセージを表示後メールログイン
       return (
-        <div className="flex flex-col items-center text-center space-y-4">
-          あなたは農工大生ですね。下のボタンを押して、農工大のGoogleアカウントを使ってログインしてください。
-          <button className="border p-4 rounded-md" onClick={() => signIn('email')}>農工大Googleアカウントでログインする</button>
-          もしあなたが農工大生でない場合は、農工祭公式LINEを追加して指示に従ってください。
-          <p className="underline">農工祭公式LINE追加URL（建設中）</p>
-        </div>
+        <main className="flex flex-col items-center max-w-sm mx-auto my-4 text-gray-900 sm:text-gray-700">
+          <SignIn /> 
+        </main>
       )
     }
   }

@@ -8,6 +8,10 @@ const QR = ({id}: {id: string}) => {
       <QRImage
         value={id}
         image={imageData}
+        level="H"
+        type="round"
+        size={150}
+        posType="round"
       />
     </div>
   )

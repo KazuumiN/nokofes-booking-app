@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState } from "react";
-import ShoppingForm from "components/shopping/ShoppingForm";
+import ShoppingForm from "pages/shopping/edit";
 import { shoppingProps, productType } from "types";
 
 interface Props {

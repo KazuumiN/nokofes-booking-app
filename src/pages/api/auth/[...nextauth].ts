@@ -1,15 +1,13 @@
 
 import NextAuth from "next-auth"
 import EmailProvider from "next-auth/providers/email"
-import GoogleProvider from "next-auth/providers/google"
+// import GoogleProvider from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "lib/prismadb"
 
-const { GOOGLE_ID, GOOGLE_SECRET, NEXTAUTH_SECRET } = process.env;
+const { NEXTAUTH_SECRET } = process.env;
 
-if (!GOOGLE_ID) throw new Error('You must provide GOOGLE_ID env var.');
-if (!GOOGLE_SECRET) throw new Error('You must provide GOOGLE_SECRET env var.');
 
 const getLineProfile = async (accessToken: string) => {
   const url = `https://api.line.me/v2/profile`
@@ -114,7 +112,7 @@ function text({ url, host }: { url: string; host: string }) {
   return `農工祭予約システムにサインインする。\n${url}\n\n`
 }
 
-export default NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     EmailProvider({
@@ -136,25 +134,37 @@ export default NextAuth({
     //   clientId: GOOGLE_ID,
     //   clientSecret: GOOGLE_SECRET,
     // }),
-    // Credentials({
-    //   name: 'LINE',
-    //   credentials: {
-    //     accessToken: { label: "Access Token", type: "text", placeholder: "Enter your access token" },
-    //   },
-    //   async authorize(credentials) {
-    //     console.log(credentials)
-    //     if (!credentials) {
-    //       throw new Error('No credentials provided')
-    //     }
-    //     const token = await getLineProfile(credentials.accessToken)
-    //     console.log(token)
-    //     const user = {
-    //       id: token.userId,
-    //     }
-    //     return user
-    //   },
-    // }),
+    Credentials({
+      name: 'LINE',
+      credentials: {
+        accessToken: { label: "Access Token", type: "text", placeholder: "Enter your access token" },
+      },
+      async authorize(credentials) {
+        console.log(credentials)
+        if (!credentials) {
+          throw new Error('No credentials provided')
+        }
+        const token = await getLineProfile(credentials.accessToken)
+        console.log(token)
+        const user = {
+          id: token.userId,
+        }
+        return user
+      },
+    }),
   ],
+  session: {
+    strategy: 'jwt',
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  // pages: {
+  //   signIn: '/auth/signin',
+  //   signOut: '/auth/signout',
+  //   error: '/auth/error', // Error code passed in query string as ?error=
+  //   verifyRequest: '/auth/verify-request', // (used for check email message)
+  //   newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
+  // },
   secret: NEXTAUTH_SECRET,
   callbacks: {
     // @ts-ignore
@@ -171,6 +181,8 @@ export default NextAuth({
     //   return session;
     // },
   }
-});
+}
 
+// @ts-ignore
+export default NextAuth(authOptions)
 

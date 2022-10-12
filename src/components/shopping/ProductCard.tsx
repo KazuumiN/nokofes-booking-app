@@ -3,38 +3,9 @@ import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, CheckIcon, Chevr
 import { productType } from '../../types'
 import Image from 'next/image';
 
-const ProductCard = ({ id, name, description, unit, imageUrl, price, days, stock, limit }: productType) => {
-  return (
-    <section className='flex flex-col items-end'>
-      <PriceCard price={price} />
-      <div className="rounded-md border-2 border-black flex flex-col p-2 space-y-1">
-        <div className="flex">
-          <Image src={imageUrl} alt={name} className="w-1/4 -mt-2 -ml-2 mr-2" width={400} height={100} />
-          <div className="flex flex-col justify-between">
-            <h3 className="text-xl text-black font-bold">
-              {name}
-            </h3>
-            <p className="text-sm">
-              {description}
-            </p>
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <StockStatus stock={stock} />
-          <div className="flex items-center space-x-3">
-            <p className="font-semibold text-gray-500">
-              {unit}
-            </p>
-            {days && <BuyTimeChanger days={days} />}
-            <BuyAmountChanger stock={stock} limit={limit} />
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export const BeerCard = (props) => {
+export const BeerCard = ({originalCount, setOriginalCount, sourCount, setSourCount, ...props}: any) => {
+  console.log(originalCount)
+  console.log(sourCount)
   return (
     <section className='flex flex-col items-end space-y-4'>
       {/* <PriceCard price={props.price} /> */}
@@ -58,18 +29,15 @@ export const BeerCard = (props) => {
               <div className="flex flex-col">
                 <div className="flex justify-between">
                   <p className='text-xl font-bold'>{item.name}</p>
-                  <div className="flex space-x-2">
-                    <p className="font-semibold text-gray-500">
-                      {item.unit}
-                    </p>
-                    <p>{item.price}円</p>
-                  </div>
                 </div>
                 <div className="flex justify-between" key={item.name}>
                   <StockStatus stock={item.stock} />
+
                   <div className="flex items-center space-x-3">
-                    
-                    {item.days && <BuyTimeChanger days={item.days} />}
+                    <p className="font-semibold text-gray-500">
+                      {item.unit}
+                    </p>
+                    <p className="font-semibold">{item.price}円</p>
                     <BuyAmountChanger stock={item.stock} limit={0} />
                   </div>
                 </div>
@@ -80,6 +48,42 @@ export const BeerCard = (props) => {
         </div>
       </div>
     </section>
+  )
+}
+
+export const MisonyuCard = ({misoCount, setMisoCount, lacticCount, setLacticCount, ...items}: any) => {
+  console.log(items)
+  return (
+    <>
+      {items.items.map((item: any) => (
+        <section key={item.id} className='flex flex-col items-end'>
+          {/* <PriceCard price={item.price} /> */}
+          <div className="rounded-md border-2 border-black flex flex-col p-2 space-y-1">
+            <div className="flex">
+              <Image src={item.imageUrl} alt={item.name} className="w-1/4 -mt-2 -ml-2 mr-2" width={400} height={100} />
+              <div className="flex flex-col justify-between">
+                <h3 className="text-xl text-black font-bold">
+                  {item.name}
+                </h3>
+                <p className="text-sm">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <StockStatus stock={item.stock} />
+              <div className="flex items-center space-x-3">
+                <p className="font-semibold text-gray-500">
+                  {item.unit}
+                </p>
+                <p className="font-semibold">{item.price}円</p>
+                <BuyAmountChanger stock={item.stock} limit={item.limit} />
+              </div>
+            </div>
+          </div>
+        </section>
+      ))}
+    </>
   )
 }
 
@@ -106,9 +110,9 @@ const StockStatus = ({ stock }: { stock: number }) => {
     red: <XCircleIcon className="h-5 w-5 text-red-500" />,
   }
   if (stock > 10) {
-    return <div className="flex items-center space-x-1">{Icons.green} <p>在庫あり：{stock}</p></div>
+    return <div className="flex items-center space-x-1">{Icons.green} <p>在庫あり</p></div>
   } else if (stock > 0) {
-    return <div className="flex items-center space-x-1">{Icons.yellow} <p>在庫少し：{stock}</p></div>
+    return <div className="flex items-center space-x-1">{Icons.yellow} <p>在庫少し</p></div>
   } else {
     return <div className="flex items-center space-x-1">{Icons.red} <p>在庫なし</p></div>
   }
@@ -149,5 +153,3 @@ const BuyAmountChanger = ({stock, limit}: {stock: number, limit: number}) => {
     </select>
   )
 }
-
-export default ProductCard;
