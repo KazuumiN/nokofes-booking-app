@@ -1,6 +1,6 @@
 const VerifyRequest = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gray-600 min-w-screen">
+    <div className="flex items-start py-10 justify-center min-h-screen p-5 bg-gray-50 min-w-screen">
         <div className="max-w-xl p-8 text-center text-gray-800 bg-white shadow-xl lg:max-w-3xl rounded-3xl lg:p-12">
             <h3 className="text-2xl">メールを送信しました</h3>
             <div className="flex justify-center">
