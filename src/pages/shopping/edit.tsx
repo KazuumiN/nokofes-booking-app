@@ -41,7 +41,7 @@ const ShoppingForm = () => {
     // TODO: 送信処理
     // TODO: 帰ってきた値を使ってuseStateの値を更新（setUserDataみたいなやつ）
     // TODO: 完了したよToastを表示
-    router.push('/entrance');
+    router.push('/shopping');
   }
 
   const options = data.shopItems.misonyuProducts.times.map((time:any) => (
