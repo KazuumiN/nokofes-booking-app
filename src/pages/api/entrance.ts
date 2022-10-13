@@ -1,5 +1,6 @@
 import checkUserType from "lib/api/checkUserType"
 import { getToken } from "next-auth/jwt"
+import client from "lib/prismadb"
 
 // @ts-ignore
 const entranceApi = async (req, res) => {

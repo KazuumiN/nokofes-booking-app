@@ -1,4 +1,5 @@
 import { getToken } from "next-auth/jwt"
+import client from "lib/prismadb"
 
 // @ts-ignore
 const shoppingApi = async (req, res) => {

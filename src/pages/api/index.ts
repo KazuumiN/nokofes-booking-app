@@ -1,5 +1,6 @@
 import checkUserType from "lib/api/checkUserType"
 import { getToken } from "next-auth/jwt"
+import client from "lib/prismadb"
 
 // @ts-ignore
 const indexApi = async (req, res) => {
@@ -15,7 +16,7 @@ const indexApi = async (req, res) => {
   }
 }
 
-const getId = (token: any) => {
+const getId = async (token: any) => {
   const { sub } = token;
   const userType = checkUserType(token)
   const numberId = '12345678' // TODO: get id from sub
