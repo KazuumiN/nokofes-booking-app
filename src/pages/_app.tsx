@@ -44,7 +44,9 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
     <SessionProvider session={pageProps.session}>
       <LiffContext.Provider value={liffObject}>
         <Layout>
-          <Component {...pageProps} />
+          <div className="font-noto">
+            <Component {...pageProps} />
+          </div>
         </Layout>
       </LiffContext.Provider>
     </SessionProvider>
