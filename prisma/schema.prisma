@@ -1,5 +1,3 @@
-// TODO: DBの構成は良く検討する
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -54,4 +52,41 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Attendee {
+  id     String @id
+  numberId String @unique
+  longerId String @default(cuid())
+  entrance Entrance?
+  shopping Shopping?
+}
+
+model Entrance {
+  id  String @id @default(cuid())
+  eleventh Int @default(0)
+  twelfth Int @default(0)
+  thirteenth Int @default(0)
+  accompaniers Int @default(0)
+  attendeeId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendee Attendee @relation(fields: [attendeeId], references: [id])
+}
+
+model Shopping {
+  id String @id @default(cuid())
+  original Int @default(0)
+  sour Int @default(0)
+  miso Int @default(0)
+  lactic Int @default(0)
+  whenToBuy Int @default(0)
+  attendeeId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendee Attendee @relation(fields: [attendeeId], references: [id])
 }
