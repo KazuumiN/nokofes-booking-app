@@ -1,6 +1,7 @@
 import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
 import checkUserType from "lib/api/checkUserType"
+import getOrCreateUser from "lib/api/getOrCreateUser"
 
 // @ts-ignore
 const shoppingApi = async (req, res) => {
@@ -21,27 +22,15 @@ const shoppingApi = async (req, res) => {
 }
 
 const getOrder = async (token: any) => {
-  const { sub } = token;
-  let order = await client.shopping.findUnique({
-    where: {
-      attendeeId: sub
-    },
-  })
-  // 注文が存在しない場合
-  if (!order) {
-    order = await client.shopping.create({
-      data: {
-        attendeeId: sub,
-      }
-    })
-  }
+  // ユーザーを取得。無ければ作って取得
+  const user = await getOrCreateUser(token)
   return {
-    userType: checkUserType(token),
-    original: order.original,
-    sour: order.sour,
-    miso: order.miso,
-    lactic: order.lactic,
-    whenToBuy: order.whenToBuy,
+    userType: user.userType,
+    original: user.original,
+    sour: user.sour,
+    miso: user.miso,
+    lactic: user.lactic,
+    whenToBuy: user.whenToBuy,
   }
 }
 
@@ -57,7 +46,7 @@ const getStock = async (order: any) => {
   }
 
   // 注文を取得
-  const orderedCount = await client.shopping.aggregate({
+  const orderedCount = await client.attendee.aggregate({
     _sum: {
       original: true,
       sour: true,

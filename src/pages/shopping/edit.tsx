@@ -7,6 +7,7 @@ import Select from 'react-select';
 import Beer from 'assets/beer.png';
 import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
+import { toast } from "react-toastify";
 
 
 // @ts-ignore
@@ -46,8 +47,11 @@ const ShoppingForm = () => {
       return
     }
     // TODO: 送信処理
-    // TODO: 帰ってきた値を使ってuseStateの値を更新（setUserDataみたいなやつ）
-    // TODO: 完了したよToastを表示
+
+
+    // TODO: 値が問題ないことを完了したことを確認してからToastを表示する
+    toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {position: 'bottom-center'});
+
     router.push('/shopping');
   }
 

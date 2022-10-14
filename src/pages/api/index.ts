@@ -1,6 +1,6 @@
-import checkUserType from "lib/api/checkUserType"
 import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
+import getOrCreateUser from "lib/api/getOrCreateUser"
 
 // @ts-ignore
 const indexApi = async (req, res) => {
@@ -35,71 +35,14 @@ const indexApi = async (req, res) => {
 }
 
 const getId = async (token: any) => {
-  const { sub } = token;
-  
-  // ユーザーを取得
-  let user = await client.attendee.findUnique({
-    where: {
-      id: sub
-    },
-    include: {
-      entrance: {
-        select: {
-          eleventh: true,
-          twelfth: true,
-          thirteenth: true,
-        }
-      },
-      shopping: {
-        select: {
-          original: true,
-          sour: true,
-          miso: true,
-          lactic: true,
-        }
-      },
-    }
-  })
-
-  //　ユーザーが存在しない場合
-  if (!user) {
-    // ユーザーを作成するために、ユニークな数字8桁の文字列を生成
-    let tempNumberId = "00000000"
-    while (true) {
-      // 該当のnumberIdを持たないかチェック
-      tempNumberId = Math.floor(Math.random() * 100000000).toString()
-      const checkUser = await client.attendee.findUnique({
-        where: {
-          numberId: tempNumberId
-        }
-      })
-      if (!checkUser) {
-        // 持たないことが確認できたのでbreak
-        break
-      }
-    }
-    // @ts-ignore
-    user = await client.attendee.create({
-      data: {
-        id: sub,
-        numberId: tempNumberId,
-        email: token.email,
-        entrance: {
-          create: {}
-        },
-        shopping: {
-          create: {},
-        }
-      }
-    })
-  }
-
+    // ユーザーを取得。無ければ作って取得
+  const user = await getOrCreateUser(token)
   return {
-    numberId: user?.numberId,
-    longerId: user?.longerId,
-    userType: checkUserType(token),
-    entranceReserved: !!(user?.entrance?.eleventh || user?.entrance?.twelfth || user?.entrance?.thirteenth),
-    shoppingReserved: !!(user?.shopping?.original || user?.shopping?.sour || user?.shopping?.miso || user?.shopping?.lactic)
+    numberId: user.numberId,
+    longerId: user.longerId,
+    userType: user.userType,
+    entranceReserved: !!(user.eleventh || user.twelfth || user.thirteenth),
+    shoppingReserved: !!(user.original || user.sour || user.miso || user.lactic)
   }
 }
 

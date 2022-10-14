@@ -1,6 +1,6 @@
-import checkUserType from "lib/api/checkUserType"
 import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
+import getOrCreateUser from "lib/api/getOrCreateUser"
 
 // @ts-ignore
 const entranceApi = async (req, res) => {
@@ -27,58 +27,46 @@ const entranceApi = async (req, res) => {
 }
 
 const getEntrance = async (token: any) => {
-  const { sub } = token;
-  let entrance = await client.entrance.findUnique({
-    where: {
-      attendeeId: sub
-    },
-  })
-  // エントランスが存在しない場合
-  if (!entrance) {
-    entrance = await client.entrance.create({
-      data: {
-        attendeeId: sub,
-      }
-    })
-  }
+  // ユーザーを取得。無ければ作って取得
+  const user = await getOrCreateUser(token)
   return {
-    userType: checkUserType(token),
-    eleventh: entrance.eleventh,
-    twelfth: entrance.twelfth,
-    thirteenth: entrance.thirteenth,
-    accompaniers: entrance.accompaniers,
+    userType: user.userType,
+    eleventh: user.eleventh,
+    twelfth: user.twelfth,
+    thirteenth: user.thirteenth,
+    accompaniers: user.accompaniers,
   }
 }
 
-const patchEntrance = async (token: any, data: any) => {
-  const { sub } = token;
-  let { eleventh, twelfth, thirteenth, accompaniers } = data;
+// const patchEntrance = async (token: any, data: any) => {
+//   const { sub } = token;
+//   let { eleventh, twelfth, thirteenth, accompaniers } = data;
 
-  // TODO: 実際はDBをロックしてカウントして、などの処理が必要
-  // TODO: 注文をしている人は予約を取り消せない
-  // TODO: 味噌乳酸菌を注文している人は日曜日を取り消せない
-  if (checkUserType(token) === 'nokodaisei') {
-    eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;
-    twelfth = [0, 1, 2].includes(twelfth) ? twelfth : 0;
-    thirteenth = [0, 1, 2].includes(thirteenth) ? thirteenth : 0;
-    accompaniers = 0;
-  } else {
-    eleventh = [0, 1].includes(eleventh) ? eleventh : 0;
-    twelfth = [0, 1].includes(twelfth) ? twelfth : 0;
-    thirteenth = [0, 1].includes(thirteenth) ? thirteenth : 0;
-    accompaniers = [0,1,2,3,4].includes(accompaniers) ? accompaniers : 0;
-  }
-  await client.entrance.update({
-    where: {
-      id: sub
-    },
-    data: {
-      eleventh,
-      twelfth,
-      thirteenth,
-      accompaniers,
-    }
-  })
-}
+//   // TODO: 実際はDBをロックしてカウントして、などの処理が必要
+//   // TODO: 注文をしている人は予約を取り消せない
+//   // TODO: 味噌乳酸菌を注文している人は日曜日を取り消せない
+//   if (checkUserType(token) === 'nokodaisei') {
+//     eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;
+//     twelfth = [0, 1, 2].includes(twelfth) ? twelfth : 0;
+//     thirteenth = [0, 1, 2].includes(thirteenth) ? thirteenth : 0;
+//     accompaniers = 0;
+//   } else {
+//     eleventh = [0, 1].includes(eleventh) ? eleventh : 0;
+//     twelfth = [0, 1].includes(twelfth) ? twelfth : 0;
+//     thirteenth = [0, 1].includes(thirteenth) ? thirteenth : 0;
+//     accompaniers = [0,1,2,3,4].includes(accompaniers) ? accompaniers : 0;
+//   }
+//   await client.user.update({
+//     where: {
+//       id: sub
+//     },
+//     data: {
+//       eleventh,
+//       twelfth,
+//       thirteenth,
+//       accompaniers,
+//     }
+//   })
+// }
 
 export default entranceApi

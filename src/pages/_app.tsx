@@ -1,3 +1,4 @@
+import 'react-toastify/dist/ReactToastify.css'
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import type { Liff } from "@line/liff";
@@ -9,6 +10,8 @@ import LiffContext from "store/LiffContext";
 import Head from "next/head";
 import Timer from "components/Timer";
 import { useRouter } from "next/router";
+import { ToastContainer } from 'react-toastify'
+
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
@@ -45,6 +48,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
       <LiffContext.Provider value={liffObject}>
         <Layout>
           <div className="font-noto">
+            <ToastContainer />
             <Component {...pageProps} />
           </div>
         </Layout>
