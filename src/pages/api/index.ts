@@ -83,6 +83,7 @@ const getId = async (token: any) => {
       data: {
         id: sub,
         numberId: tempNumberId,
+        email: token.email,
         entrance: {
           create: {}
         },

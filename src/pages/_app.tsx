@@ -21,15 +21,15 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
     import("@line/liff")
       .then((liff) => liff.default)
       .then((liff) => {
-        console.log("LIFF init...");
+        // console.log("LIFF init...");
         liff
           .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
           .then(() => {
-            console.log("LIFF init succeeded.");
+            // console.log("LIFF init succeeded.");
             setLiffObject(liff);
           })
           .catch((error: Error) => {
-            console.log("LIFF init failed.");
+            // console.log("LIFF init failed.");
             setLiffError(error.toString());
           });
       });

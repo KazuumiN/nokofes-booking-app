@@ -13,7 +13,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json())
 const Home: NextPage = () => {
   const { data, error } = useSWR('/api', fetcher);
   if (error) return <p>Error: {error.message}</p>;
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <p>データを取得中...</p>;
 
   const {
     numberId,

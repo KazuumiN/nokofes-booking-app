@@ -16,7 +16,9 @@ const EntranceEdit = () => {
   const [thirteenth, setThirteenth] = useState(null);
   const [accompaniers, setAccompaniers] = useState(null);
   if (error) return <p>Error: {error.message}</p>;
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <p>データを取得中...</p>;
+
+  const reserved = !!(data.eleventh || data.twelfth || data.thirteenth);
 
   const options = [0,1,2].map((i) => (
     { value: i, label: entranceVisitType(i) }
@@ -28,7 +30,7 @@ const EntranceEdit = () => {
 
   const cancel = () => {
     // TODO: 記入済みのデータが消える警告モーダルを表示
-    if (data.reserved) {
+    if (reserved) {
       router.push('/entrance');
     } else {
       router.push('/');
@@ -39,17 +41,17 @@ const EntranceEdit = () => {
     // TODO: 完了したよToastを表示
     if (data.userType === 'nokodaisei') {
       // @ts-ignore
-      const eleventhData = eleventh ? eleventh.value : data.reserved ? data.eleventh : 0;
+      const eleventhData = eleventh ? eleventh.value : reserved ? data.eleventh : 0;
       // @ts-ignore
-      const twelfthData = twelfth ? twelfth.value : data.reserved ? data.twelfth : 0;
+      const twelfthData = twelfth ? twelfth.value : reserved ? data.twelfth : 0;
       // @ts-ignore
-      const thirteenthData = thirteenth ? thirteenth.value : data.reserved ? data.thirteenth : 0;
+      const thirteenthData = thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
     } else {
-      const eleventhData = eleventh != null ? eleventh ? 1 : 0 : data.reserved ? data.eleventh : 0;
-      const twelfthData = twelfth != null ? twelfth ? 1 : 0 : data.reserved ? data.twelfth : 0;
-      const thirteenthData = thirteenth != null ? thirteenth ? 1 : 0 : data.reserved ? data.thirteenth : 0;
+      const eleventhData = eleventh != null ? eleventh ? 1 : 0 : reserved ? data.eleventh : 0;
+      const twelfthData = twelfth != null ? twelfth ? 1 : 0 : reserved ? data.twelfth : 0;
+      const thirteenthData = thirteenth != null ? thirteenth ? 1 : 0 : reserved ? data.thirteenth : 0;
       // @ts-ignore
-      const accompaniersData = accompaniers ? accompaniers.value : data.reserved ? data.accompaniers : 0;
+      const accompaniersData = accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
     }
     router.push('/entrance');
   }
@@ -59,7 +61,7 @@ const EntranceEdit = () => {
         <div className="text-lg font-medium">
           ご来場日
         </div>
-        {data.reserved && data.userType === 'general' && (
+        {reserved && data.userType === 'general' && (
           <p>
             お申し込みを取り消されたい場合は、チェックを外して送信してください。
           </p>
@@ -74,7 +76,7 @@ const EntranceEdit = () => {
                 </p>
                 <Select
                   options={options}
-                  defaultValue={data.reserved ? options[data.eleventh] : options[0]}
+                  defaultValue={reserved ? options[data.eleventh] : options[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setEleventh(e)
@@ -89,7 +91,7 @@ const EntranceEdit = () => {
                 </p>
                 <Select
                   options={options}
-                  defaultValue={data.reserved ? options[data.twelfth] : options[0]}
+                  defaultValue={reserved ? options[data.twelfth] : options[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setTwelfth(e)
@@ -104,7 +106,7 @@ const EntranceEdit = () => {
                 </p>
                 <Select
                   options={options}
-                  defaultValue={data.reserved ? options[data.thirteenth] : options[0]}
+                  defaultValue={reserved ? options[data.thirteenth] : options[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setThirteenth(e)}
@@ -121,7 +123,7 @@ const EntranceEdit = () => {
                     id="eleventh"
                     name="eleventh"
                     type="checkbox"
-                    checked={eleventh != null ? eleventh : data.reserved ? data.eleventh : false}
+                    checked={eleventh != null ? eleventh : reserved ? data.eleventh : false}
                     onChange={(e) => {
                       // @ts-ignore
                       return setEleventh(e.target.checked)}
@@ -142,7 +144,7 @@ const EntranceEdit = () => {
                     id="twelfth"
                     name="twelfth"
                     type="checkbox"
-                    checked={twelfth != null ? twelfth : data.reserved ? data.twelfth : false}
+                    checked={twelfth != null ? twelfth : reserved ? data.twelfth : false}
                     onChange={(e) => {
                       // @ts-ignore
                       return setTwelfth(e.target.checked)}
@@ -163,7 +165,7 @@ const EntranceEdit = () => {
                     id="thirteenth"
                     name="thirteenth"
                     type="checkbox"
-                    checked={thirteenth != null ? thirteenth : data.reserved ? data.thirteenth : false}
+                    checked={thirteenth != null ? thirteenth : reserved ? data.thirteenth : false}
                     onChange={(e) => {
                       // @ts-ignore
                       return setThirteenth(e.target.checked)}
@@ -189,7 +191,7 @@ const EntranceEdit = () => {
           </label>
           <Select
             options={accompaniersOptions}
-            defaultValue={data.reserved ? accompaniersOptions[data.accompaniers] : options[0]}
+            defaultValue={reserved ? accompaniersOptions[data.accompaniers] : options[0]}
             onChange={(e) => {
               // @ts-ignore
               return setAccompaniers(e)}
@@ -211,7 +213,7 @@ const EntranceEdit = () => {
             className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             onClick={submit}
           >
-            {data.reserved ? '更新' : '予約'}する
+            {reserved ? '更新' : '予約'}する
           </button>
         </div>
       </div>

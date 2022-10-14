@@ -5,6 +5,8 @@ import ShoppingForm from "pages/shopping/edit";
 import { shoppingProps, productType } from "types";
 import { useSession } from 'next-auth/react'; 
 import useSWR from "swr";
+import { useRouter } from 'next/router';
+
 // @ts-ignore
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
@@ -13,12 +15,26 @@ interface Props {
   id: string;
   shoppingData: shoppingProps;
 }
-const Wrapper = () => {
+const ShoppingView = () => {
+  const router = useRouter();
   const { data, error } = useSWR('/api/shopping', fetcher);
   if (error) return <p>Error: {error.message}</p>;
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <p>データを取得中...</p>;
+
+  if (!(data.order.original || data.order.sour || data.order.miso || data.order.lactic)) {
+    // 予約していないため/editへ飛ばす
+    router.push('/shopping/edit');
+    return <p>予約ページに遷移します</p>
+  }
+
   return (
-    <Shopping shoppingData={data} />
+    <div>
+      <h1>予約内容</h1>
+      {!!data.original && <p>オリジナルビール: {data.original}本</p>}
+      {!!data.sour && <p>サワービール: {data.sour}本</p>}
+      {!!data.miso && <p>味噌: {data.miso}個</p>}
+      {!!data.lactic && <p>乳酸菌飲料: {data.lactic}本</p>}
+    </div>
   )
 }
 
@@ -91,24 +107,4 @@ const products: productType[] = [
   },
 ]
 
-const Shopping = ({ shoppingData }: Props) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const openForm = () => setIsEditing(true);
-  const closeForm = () => setIsEditing(false);
-  return (
-    <>
-      {!shoppingData.reserved || isEditing ? (
-        <ShoppingForm
-          data={shoppingData}
-          products={products}
-          beerProducts={beerProducts}
-          closeForm={closeForm}
-        />
-      ) : (
-        <>ここにShoppingViewがきます</>
-      )}
-    </>
-  )
-}
-
-export default Wrapper
+export default ShoppingView

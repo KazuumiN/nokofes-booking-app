@@ -58,6 +58,7 @@ model Attendee {
   id     String @id
   numberId String @unique
   longerId String @default(cuid())
+  email String?
   entrance Entrance?
   shopping Shopping?
 }

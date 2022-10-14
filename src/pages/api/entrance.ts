@@ -43,7 +43,6 @@ const getEntrance = async (token: any) => {
   }
   return {
     userType: checkUserType(token),
-    reserved: !!entrance.updatedAt,
     eleventh: entrance.eleventh,
     twelfth: entrance.twelfth,
     thirteenth: entrance.thirteenth,
@@ -56,6 +55,7 @@ const patchEntrance = async (token: any, data: any) => {
   let { eleventh, twelfth, thirteenth, accompaniers } = data;
 
   // TODO: 実際はDBをロックしてカウントして、などの処理が必要
+  // TODO: 注文をしている人は予約を取り消せない
   // TODO: 味噌乳酸菌を注文している人は日曜日を取り消せない
   if (checkUserType(token) === 'nokodaisei') {
     eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;

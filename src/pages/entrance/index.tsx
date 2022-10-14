@@ -15,9 +15,9 @@ const EntranceView = () => {
   const router = useRouter();
   const { data, error } = useSWR('/api/entrance', fetcher);
   if (error) return <p>Error: {error.message}</p>;
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <p>データを取得中...</p>;
 
-  if (!data.reserved) {
+  if (!(data.eleventh || data.twelfth || data.thirteenth)) {
     // 予約していないため/editへ飛ばす
     router.push('/entrance/edit');
     return <p>予約ページに遷移します...</p>;

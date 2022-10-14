@@ -149,12 +149,12 @@ export const authOptions = {
         accessToken: { label: "Access Token", type: "text", placeholder: "Enter your access token" },
       },
       async authorize(credentials) {
-        console.log(credentials)
+        // console.log(credentials)
         if (!credentials) {
           throw new Error('No credentials provided')
         }
         const token = await getLineProfile(credentials.accessToken)
-        console.log(token)
+        // console.log(token)
         const user = {
           id: token.userId,
         }
