@@ -7,6 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        hina: ["Hina Mincho", "serif"],
+        zenkaku: ['Zen Kaku Gothic New', "sans-serif"],
         noto: ['Noto Sans JP', 'sans-serif'],
       }
     },

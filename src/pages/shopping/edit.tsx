@@ -5,6 +5,8 @@ import useSWR from "swr";
 import { useRouter } from 'next/router';
 import Select from 'react-select';
 import Beer from 'assets/beer.png';
+import Original from 'assets/original.jpg';
+import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
 import { toast } from "react-toastify";
@@ -61,13 +63,13 @@ const ShoppingForm = () => {
   
   return (
     <div className="flex flex-col">
-      <h1 className="text-3xl font-bold">{reserved ? "予約の修正" : "商品の予約"}</h1>
+      <h1 className="text-3xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
       <div className="flex flex-col space-y-8 px-2">
-        <ProductCard
+        <BeerCard
           counts={[originalCount, sourCount]}
           setCounts={[setOriginalCount, setSourCount]}
           buyAmountInitials={[data.order.original, data.order.sour]}
-          image={Beer}
+          images={[Original, Sour]}
           stocks={[data.stock.original, data.stock.sour]}
           {...data.shopItems.beerProducts}
         />

@@ -77,7 +77,7 @@ const getShopItems = () => {
       },
       {
         id: 'sour',
-        name: 'サワー',
+        name: 'サワーエール',
         unit: '330ml',
         price: 900,
       }

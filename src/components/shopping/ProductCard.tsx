@@ -3,6 +3,51 @@ import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon, CheckIcon, Chevr
 import { productType } from '../../types'
 import Image from 'next/image';
 
+export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, ...props}: any) => {
+  return (
+    <section className='flex flex-col items-end space-y-4'>
+      {/* <OldPriceCard price={props.price} /> */}
+      <div className="rounded-md flex flex-col p-2 space-y-1">
+        <div className="flex flex-col justify-between p-2 bg-[#024F27] text-white">
+          <h3 className="text-3xl font-hina mb-1">{props.name}</h3>
+          <p className="text-sm ml-2">{props.description}</p>
+        </div>
+        <div className="flex flex-col space-y-2">
+          {props.items.map((item: any, index: number) => {
+            setCounts[index](buyAmountInitials[index])
+            const isLast = props.items.length - 1 === index;
+            return (
+              <>
+              <div className="flex justify-between p-1">
+                <div className="flex space-x-2">
+                  <div className='m-2'>
+                    <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
+                  </div>
+                  <div className="flex flex-col justify-between mb-4">
+                    <p className='text-2xl font-hina mb-5'>{item.name}</p>
+                    <StockStatus stock={stocks[index]} />
+                    <div className="flex space-x-14 items-center">
+                      <p className="text-gray-500 ml-2">{item.unit}</p>
+                      <div className="flex items-center space-x-5 self-end" key={item.name}>
+                        <p className="">{item.price}円</p>
+                        <div className="flex">
+                          <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
+                          <p className='ml-0.5 my-auto'>本</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {!isLast && <hr />}
+            </>
+          )})}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...props}: any) => {
   return (
     <section className='flex flex-col items-end space-y-4'>
@@ -50,51 +95,51 @@ export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...pr
   )
 }
 
-export const BeerCard = ({counts, setCounts, ...props}: any) => {
-  return (
-    <section className='flex flex-col items-end space-y-4'>
-      {/* <OldPriceCard price={props.price} /> */}
-      <div className="rounded-md border-2 border-black flex flex-col p-2 space-y-1">
-        <div className="flex">
-          <Image src={props.imageUrl} alt={props.name} className="w-1/4 -mt-2 -ml-2 mr-2" width={400} height={100} />
-          <div className="flex flex-col justify-between">
-            <h3 className="text-xl text-black font-bold">
-              {props.name}
-            </h3>
-            <p className="text-sm">
-              {props.description}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col space-y-2">
-          {props.items.map((item: any, index: number) => {
-            const isLast = props.items.length - 1 === index;
-            return (
-            <>
-              <div className="flex flex-col">
-                <div className="flex justify-between">
-                  <p className='text-xl font-bold'>{item.name}</p>
-                </div>
-                <div className="flex justify-between" key={item.name}>
-                  <StockStatus stock={item.stock} />
+// export const BeerCard = ({counts, setCounts, ...props}: any) => {
+//   return (
+//     <section className='flex flex-col items-end space-y-4'>
+//       {/* <OldPriceCard price={props.price} /> */}
+//       <div className="rounded-md border-2 border-black flex flex-col p-2 space-y-1">
+//         <div className="flex">
+//           <Image src={props.imageUrl} alt={props.name} className="w-1/4 -mt-2 -ml-2 mr-2" width={400} height={100} />
+//           <div className="flex flex-col justify-between">
+//             <h3 className="text-xl text-black font-bold">
+//               {props.name}
+//             </h3>
+//             <p className="text-sm">
+//               {props.description}
+//             </p>
+//           </div>
+//         </div>
+//         <div className="flex flex-col space-y-2">
+//           {props.items.map((item: any, index: number) => {
+//             const isLast = props.items.length - 1 === index;
+//             return (
+//             <>
+//               <div className="flex flex-col">
+//                 <div className="flex justify-between">
+//                   <p className='text-xl font-bold'>{item.name}</p>
+//                 </div>
+//                 <div className="flex justify-between" key={item.name}>
+//                   <StockStatus stock={item.stock} />
 
-                  <div className="flex items-center space-x-3">
-                    <p className="font-semibold text-gray-500">
-                      {item.unit}
-                    </p>
-                    <p className="font-semibold">{item.price}円</p>
-                    <BuyAmountChanger stock={item.stock} limit={0} count={counts[index]} setCount={setCounts[index]} />
-                  </div>
-                </div>
-              </div>
-              {!isLast && <hr />}
-            </>
-          )})}
-        </div>
-      </div>
-    </section>
-  )
-}
+//                   <div className="flex items-center space-x-3">
+//                     <p className="font-semibold text-gray-500">
+//                       {item.unit}
+//                     </p>
+//                     <p className="font-semibold">{item.price}円</p>
+//                     <BuyAmountChanger stock={item.stock} limit={0} count={counts[index]} setCount={setCounts[index]} />
+//                   </div>
+//                 </div>
+//               </div>
+//               {!isLast && <hr />}
+//             </>
+//           )})}
+//         </div>
+//       </div>
+//     </section>
+//   )
+// }
 
 // export const MisonyuCard = ({, ...items}: any) => {
 //   return (
