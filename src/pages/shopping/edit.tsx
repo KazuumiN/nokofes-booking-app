@@ -63,7 +63,7 @@ const ShoppingForm = () => {
   
   return (
     <div className="flex flex-col">
-      <h1 className="text-3xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
+      <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
       <div className="flex flex-col space-y-8 px-2">
         <BeerCard
           counts={[originalCount, sourCount]}

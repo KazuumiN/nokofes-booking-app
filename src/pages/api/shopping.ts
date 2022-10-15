@@ -67,17 +67,19 @@ const getStock = async (order: any) => {
 const getShopItems = () => {
   const beerProducts = {
     name: "農工大クラフト",
-    description: "芳醇なブルーベリーと超音波熟成の技術を使い、本場オレゴンで腕に磨きをかけたブルワーさんと共に贅沢な一品を完成させました！",
+    description: "農工大ルーツのブルーベリーから手絞りで果汁を絞り出し、超音波熟成の技術を用いて仕上げました。農工大OBのブルワーさんと共に作り上げた贅沢なクラフトビールです!!",
     items: [
       {
         id: 'original',
         name: 'オリジナル',
+        description: 'フルーティで香り豊かな一杯',
         unit: '330ml',
         price: 900,
       },
       {
         id: 'sour',
         name: 'サワーエール',
+        description: '果実の酸味の組み合わせを楽しむ一杯',
         unit: '330ml',
         price: 900,
       }

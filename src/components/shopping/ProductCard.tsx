@@ -7,10 +7,10 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
   return (
     <section className='flex flex-col items-end space-y-4'>
       {/* <OldPriceCard price={props.price} /> */}
-      <div className="rounded-md flex flex-col p-2 space-y-1">
-        <div className="flex flex-col justify-between p-2 bg-[#024F27] text-white">
+      <div className="rounded-md flex flex-col py-1 space-y-1">
+        <div className="flex flex-col justify-between p-2 px-4 bg-[#024F27] text-white">
           <h3 className="text-3xl font-hina mb-1">{props.name}</h3>
-          <p className="text-sm ml-2">{props.description}</p>
+          <p className="text-xs">{props.description}</p>
         </div>
         <div className="flex flex-col space-y-2">
           {props.items.map((item: any, index: number) => {
@@ -23,17 +23,19 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
                   <div className='m-2'>
                     <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
                   </div>
-                  <div className="flex flex-col justify-between mb-4">
-                    <p className='text-2xl font-hina mb-5'>{item.name}</p>
-                    <StockStatus stock={stocks[index]} />
-                    <div className="flex space-x-14 items-center">
-                      <p className="text-gray-500 ml-2">{item.unit}</p>
-                      <div className="flex items-center space-x-5 self-end" key={item.name}>
-                        <p className="">{item.price}円</p>
-                        <div className="flex">
-                          <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
-                          <p className='ml-0.5 my-auto'>本</p>
-                        </div>
+                  <div className="flex flex-col justify-between mb-2 py-2">
+                    <div className="flex space-x-8 items-end justify-between">
+                      <p className='text-[23px] font-hina '>{item.name}</p>
+                      <p className="text-gray-500 text-[15px] ">{item.unit}</p>
+                    </div>
+                    <p className='text-xs'>
+                      {item.description}
+                    </p>
+                    <div className="flex items-center space-x-4">
+                      <StockStatus stock={stocks[index]} />
+                      <div className="flex items-center self-end space-x-2" key={item.name}>
+                        <p className="text-xl">{item.price}円<span className="text-sm">(税込)</span></p>
+                        <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
                       </div>
                     </div>
                   </div>
@@ -176,6 +178,41 @@ export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...pr
 //   )
 // }
 
+const StockStatus = ({ stock }: { stock: number }) => {
+  const Icons = {
+    green: <CheckCircleIcon className="h-4 w-4 text-green-500" />,
+    yellow: <ExclamationTriangleIcon className="h-4 w-4 text-yellow-400" />,
+    red: <XCircleIcon className="h-4 w-4 text-red-500" />,
+  }
+  if (stock > 10) {
+    return <div className="flex items-center space-x-1 text-sm">{Icons.green} <p>在庫あり</p></div>
+  } else if (stock > 0) {
+    return <div className="flex items-center space-x-1 text-sm">{Icons.yellow} <p>在庫少し</p></div>
+  } else {
+    return <div className="flex items-center space-x-1 text-sm">{Icons.red} <p>在庫なし</p></div>
+  }
+}
+
+const BuyAmountChanger = ({stock, limit, count, setCount}: {stock: number, limit: number, count: number, setCount: any}) => {
+  
+  const options = [...Array((limit ? Math.min(stock,limit) : stock)+1)].map((_, i) => i)
+  return (
+    <select
+    id="a"
+    name="a"
+    value={count}
+    onChange={(e) => setCount(e.target.value)}
+    className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 sm:text-sm"
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  )
+}
+
 const OldPriceCard = ({price}: {price: number}) => {
   return (
     <div className="bg-neutral-100 z-50 p-1 shadow-sm -mr-4 -mb-4">
@@ -191,22 +228,6 @@ const OldPriceCard = ({price}: {price: number}) => {
     </div>
   )
 }
-
-const StockStatus = ({ stock }: { stock: number }) => {
-  const Icons = {
-    green: <CheckCircleIcon className="h-5 w-5 text-green-500" />,
-    yellow: <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" />,
-    red: <XCircleIcon className="h-5 w-5 text-red-500" />,
-  }
-  if (stock > 10) {
-    return <div className="flex items-center space-x-1">{Icons.green} <p>在庫あり</p></div>
-  } else if (stock > 0) {
-    return <div className="flex items-center space-x-1">{Icons.yellow} <p>在庫少し</p></div>
-  } else {
-    return <div className="flex items-center space-x-1">{Icons.red} <p>在庫なし</p></div>
-  }
-}
-
 const BuyTimeChanger = ({days}: {days: string[]}) => {
   return (
     <select
@@ -217,26 +238,6 @@ const BuyTimeChanger = ({days}: {days: string[]}) => {
       {days.map((day) => (
         <option key={day} value={day}>
           {day}
-        </option>
-      ))}
-    </select>
-  )
-}
-
-const BuyAmountChanger = ({stock, limit, count, setCount}: {stock: number, limit: number, count: number, setCount: any}) => {
-  
-  const options = [...Array((limit ? Math.min(stock,limit) : stock)+1)].map((_, i) => i)
-  return (
-    <select
-      id="a"
-      name="a"
-      value={count}
-      onChange={(e) => setCount(e.target.value)}
-      className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 sm:text-sm"
-    >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
         </option>
       ))}
     </select>
