@@ -8,9 +8,9 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
     <section className='flex flex-col items-end space-y-4'>
       {/* <OldPriceCard price={props.price} /> */}
       <div className="rounded-md flex flex-col py-1 space-y-1">
-        <div className="flex flex-col justify-between p-2 px-4 bg-[#024F27] text-white">
+        <div className="flex flex-col justify-between p-2 px-3 bg-[#024F27] text-white">
           <h3 className="text-3xl font-hina mb-1">{props.name}</h3>
-          <p className="text-xs">{props.description}</p>
+          <p className="text-xs  whitespace-pre-wrap">{props.description}</p>
         </div>
         <div className="flex flex-col space-y-2">
           {props.items.map((item: any, index: number) => {

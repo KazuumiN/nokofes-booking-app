@@ -67,27 +67,28 @@ const getStock = async (order: any) => {
 const getShopItems = () => {
   const beerProducts = {
     name: "農工大クラフト",
-    description: "農工大ルーツのブルーベリーから手絞りで果汁を絞り出し、超音波熟成の技術を用いて仕上げました。農工大OBのブルワーさんと共に作り上げた贅沢なクラフトビールです!!",
+    description: "農工大ルーツのブルーベリーから手絞りで果汁を絞り出し、\n超音波熟成の技術を用いて仕上げました。農工大OBのブルワーさんと共に作り上げた贅沢なクラフトビールです!!",
     items: [
       {
         id: 'original',
         name: 'オリジナル',
-        description: 'フルーティで香り豊かな一杯',
+        description: 'フルーティで豊かな香りを感じる一杯',
         unit: '330ml',
         price: 900,
       },
       {
         id: 'sour',
         name: 'サワーエール',
-        description: '果実の酸味の組み合わせを楽しむ一杯',
+        description: '果実と酸味の組み合わせを楽しむ一杯',
         unit: '330ml',
         price: 900,
       }
     ],
   }
+  // 毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！
   const misoProduct = {
     name: "エンレイ大豆味噌",
-    description: "毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！",
+    description: "原料のコメとダイズの栽培から仕込みまで、すべての工程を農工大で行っています。天然醸造の生味噌を学園祭のお土産にいかがですか？",
     items: [
       {
         id: 'miso',
@@ -99,7 +100,7 @@ const getShopItems = () => {
   }
   const lacticProduct = {
     name: "乳酸菌飲料",
-    description: "毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！",
+    description: "農工大で飼育されている乳牛から搾られた新鮮な生乳を使用した乳酸菌飲料です。目安は4倍希釈ですが、お好みの濃さに調節して楽しんでください！",
     items: [
       {
         id: 'lactic',
