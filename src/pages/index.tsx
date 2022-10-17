@@ -3,16 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Timer from "components/Timer";
 
-const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
-  liff,
-  liffError
-}) => {
-  if (new Date("2022-10-20T12:00:00+0900") > new Date()) {
-    // 予約開始前はタイマーを表示する早期リターン
-    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
-  }
-  // 予約開始後
-
+const Home = () => {
   return (
     <div>
       <Head>
@@ -22,7 +13,23 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
       </Head>
 
       <main>
-        <div className="text-2xl text-center">予約開始！</div>
+        <div className="text-2xl text-center p-4">
+          不具合により、予約システムが上手く動いておりません。
+          <br/>
+          ご迷惑をおかけしております。
+          <br />
+          <br />
+          現在最優先で作業中です。
+          <br/>
+          <br />
+          <span className="font-bold">明日10/21の12:00より再開予定</span>
+          <br/>
+          です。今一度お待ちください。
+        </div>
+        {/* 作業タイムライン */}
+        <div className="text-center">
+          <Timer />
+        </div>
       </main>
     </div>
   );
