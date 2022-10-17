@@ -10,6 +10,9 @@ const stock = {
   miso: 100,
   lactic: 100,
 }
+// みそにゅーの受け取り日時の制限を定義
+const whenToBuyLimit = 60
+
 const getStock = async (order: any) => {
   const { original, sour, miso, lactic } = order;
   
@@ -63,7 +66,7 @@ const getShopItems = () => {
         id: 'miso',
         name: 'エンレイ大豆味噌',
         description: '天然醸造の生味噌を学園祭のお土産に',
-        unit: '330ml',
+        unit: '900g',
         price: 500,
       },
       {
@@ -75,58 +78,46 @@ const getShopItems = () => {
       }
     ]
   }
-  
-  // 毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！
-  const misoProduct = {
-    name: "エンレイ大豆味噌",
-    description: "原料のコメとダイズの栽培から仕込みまで、すべての工程を農工大で行っています。天然醸造の生味噌を学園祭のお土産にいかがですか？",
-    items: [
-      {
-        id: 'miso',
-        unit: "900g",
-        price: 500,
-        limit: 5,
-      }
-    ],
-  }
-  const lacticProduct = {
-    name: "乳酸菌飲料",
-    description: "農工大で飼育されている乳牛から搾られた新鮮な生乳を使用した乳酸菌飲料です。目安は4倍希釈ですが、お好みの濃さに調節して楽しんでください！",
-    items: [
-      {
-        id: 'lactic',
-        unit: "500ml",
-        price: 500,
-        limit: 5,
-      },
-    ],
-  }
   return {
     beerProducts,
     misonyuProducts,
-    misoProduct,
-    lacticProduct
   }
 }
-
-const times = [
-  // TODO: ここもユーザーの値によってremainingを増やす
-  {
-    id: 1,
-    name: "11/13 10:00~12:00",
-    remaining: 10,
-  },
-  {
-    id: 2,
-    name: "11/13 12:00~14:00",
-    remaining: 10,
-  },
-  {
-    id: 3,
-    name: "11/13 14:00~16:00",
-    remaining: 10,
-  },
-]
+const getTimes = async () => {
+  // ユーザーの値によってremainingを増やすと思ったがローカルで対応
+  const whenToBuy1 = await client.attendee.count({
+    where: {
+      whenToBuy: 1,
+    }
+  })
+  const whenToBuy2 = await client.attendee.count({
+    where: {
+      whenToBuy: 2,
+    }
+  })
+  const whenToBuy3 = await client.attendee.count({
+    where: {
+      whenToBuy: 3,
+    }
+  })
+  return [
+    {
+      id: 1,
+      name: "11/13 10:00~12:00",
+      remaining: !!(whenToBuyLimit-whenToBuy1),
+    },
+    {
+      id: 2,
+      name: "11/13 12:00~14:00",
+      remaining: !!(whenToBuyLimit-whenToBuy2),
+    },
+    {
+      id: 3,
+      name: "11/13 14:00~16:00",
+      remaining: !!(whenToBuyLimit-whenToBuy3),
+    },
+  ]
+}
 
 const patchShopping = async (token: any, data: any) => {
   const { sub } = token;
@@ -137,8 +128,13 @@ const patchShopping = async (token: any, data: any) => {
   if ((original < 0 || sour < 0 || miso < 0 || lactic < 0) && !(Number.isInteger(original) && Number.isInteger(sour) && Number.isInteger(miso) && Number.isInteger(lactic))) {
     throw new Error("invalid input")
   }
+  // 味噌と乳酸菌を選んでいるときはwhenToBuyが必須
   if (((miso || lactic) && ![1,2,3].includes(whenToBuy)) || ![0,1,2,3].includes(whenToBuy)) {
     throw new Error("invalid whenToBuy")
+  }
+  // 味噌と乳酸菌がない場合はwhenToBuyは0
+  if (!(miso || lactic) && whenToBuy !== 0) {
+    whenToBuy=0
   }
   
   // トランザクション処理
@@ -163,7 +159,8 @@ const patchShopping = async (token: any, data: any) => {
           whenToBuy: whenToBuy,
         }
       })
-      if (whenToBuyCurrent + 1 > 60) {
+      // TODO: 元々選んでた時の対処ができてない
+      if (whenToBuyCurrent + 1 > whenToBuyLimit) {
         throw new Error('受け取り日時の上限を超えています')
       }
     }
@@ -204,6 +201,7 @@ const shoppingApi = async (req, res) => {
         const order = await getOrCreateUser(token)
         const stock = await getStock(order)
         const shopItems = getShopItems()
+        const times = await getTimes()
         const data = { order, stock, shopItems, times }
         res.status(200).json(data)
       } else {

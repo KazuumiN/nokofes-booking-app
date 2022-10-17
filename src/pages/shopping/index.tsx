@@ -15,7 +15,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json())
 const ShoppingView = () => {
   const router = useRouter();
   const { data, error } = useSWR('/api/shopping', fetcher);
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
   const reserved = router.query.reserved;

@@ -37,14 +37,12 @@ const ShoppingForm = () => {
       ref.current = 1;
     }
   }, [data]);
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
 
   const pricing = 900 * originalCount + 900 * sourCount + 500 * misoCount + 500 * lacticCount;
-
   const reserved = !!(data.order.original || data.order.sour || data.order.miso || data.order.lactic);
-  
   const buyingMisonyu = !(misoCount==0 && lacticCount==0)
 
   const checkIfAnythingChanged = () => {
@@ -63,12 +61,6 @@ const ShoppingForm = () => {
     }
   }
   const submit = () => {
-    console.log('submit');
-    console.log(originalCount);
-    console.log(sourCount);
-    console.log(misoCount);
-    console.log(lacticCount);
-    console.log(whenToBuy);
     // TODO: まだ予約していないかつ来場日にチェックが入っていない場合、警告を表示して送信をさせない。
     const whenToBuyData = whenToBuy ? whenToBuy : whenToBuy==null ? data.order.whenToBuy : 0;
 
@@ -79,7 +71,6 @@ const ShoppingForm = () => {
         router.push('/');
       }
     }
-    
     if (buyingMisonyu && !whenToBuyData) {
       alert('受け取り日時を選択してください');
       return
@@ -104,7 +95,11 @@ const ShoppingForm = () => {
           position: 'bottom-center',
           draggable: true,
         });
-        router.push('/shopping?reserved=true');
+        if (originalCount || sourCount || misoCount || lacticCount) {
+          router.push('/shopping?reserved=true');
+        } else {
+          router.push('/');
+        }
       } else {
         alert('エラーが発生しました。');
       }
@@ -112,7 +107,7 @@ const ShoppingForm = () => {
   }
 
   const options = data.times.map((time:any) => (
-    { value: time.id, label:time.name, isDisabled: (time.remaining == 0 && data.order.whenToBuy != time.id)}
+    { value: time.id, label:time.name, isDisabled: (!time.remaining && data.order.whenToBuy != time.id)}
   ))
   
   return (
@@ -145,7 +140,6 @@ const ShoppingForm = () => {
               className="self-end"
               options={options}
               defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
-              isClearable={true}
               onChange={(e) => setWhenToBuy(e.value)}
               isSearchable={false}
             />

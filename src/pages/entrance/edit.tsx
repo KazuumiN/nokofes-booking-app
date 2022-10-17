@@ -1,4 +1,4 @@
-// TODO: 選択不可能な項目を非表示にする
+// TODO: 選択不可能な項目を非表示にする。特に学生
 import { entranceProps } from "../../types"
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -17,7 +17,7 @@ const EntranceEdit = () => {
   const [twelfth, setTwelfth] = useState(null);
   const [thirteenth, setThirteenth] = useState(null);
   const [accompaniers, setAccompaniers] = useState(null);
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
   const reserved = !!(data.eleventh || data.twelfth || data.thirteenth);
