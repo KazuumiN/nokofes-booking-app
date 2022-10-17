@@ -248,7 +248,7 @@ const BuyAmountChanger = ({stock, limit, count, setCount}: {stock: number, limit
     id="a"
     name="a"
     value={count}
-    onChange={(e) => setCount(e.target.value)}
+    onChange={(e) => setCount(Number(e.target.value))}
     className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 sm:text-sm"
     >
       {options.map((option) => (
