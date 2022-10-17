@@ -1,3 +1,4 @@
+// TODO: 選択不可能な項目を非表示にする
 import { entranceProps } from "../../types"
 import { useEffect, useState } from "react";
 import useSWR from "swr";

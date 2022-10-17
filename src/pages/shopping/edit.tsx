@@ -147,7 +147,7 @@ const ShoppingForm = () => {
               options={options}
               defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
               isClearable={true}
-              onChange={(e) => setWhenToBuy(e)}
+              onChange={(e) => setWhenToBuy(e.value)}
               isSearchable={false}
             />
           </div>
