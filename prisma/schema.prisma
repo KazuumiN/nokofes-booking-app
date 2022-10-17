@@ -6,7 +6,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
 }
 
 model Account {
@@ -64,6 +64,9 @@ model Attendee {
   twelfth Int @default(0)
   thirteenth Int @default(0)
   accompaniers Int @default(0)
+  numberOnEleventh Int @default(0)
+  numberOnTwelfth Int @default(0)
+  numberOnThirteenth Int @default(0)
   // shopping用↓
   original Int @default(0)
   sour Int @default(0)

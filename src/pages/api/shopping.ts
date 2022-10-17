@@ -23,15 +23,7 @@ const shoppingApi = async (req, res) => {
 
 const getOrder = async (token: any) => {
   // ユーザーを取得。無ければ作って取得
-  const user = await getOrCreateUser(token)
-  return {
-    userType: user.userType,
-    original: user.original,
-    sour: user.sour,
-    miso: user.miso,
-    lactic: user.lactic,
-    whenToBuy: user.whenToBuy,
-  }
+  return await getOrCreateUser(token)
 }
 
 const getStock = async (order: any) => {
@@ -85,6 +77,28 @@ const getShopItems = () => {
       }
     ],
   }
+
+  const misonyuProducts = {
+    name: "味噌乳酸菌市",
+    description: "毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！",
+    items: [
+      {
+        id: 'miso',
+        name: 'エンレイ大豆味噌',
+        description: '天然醸造の生味噌を学園祭のお土産に',
+        unit: '330ml',
+        price: 500,
+      },
+      {
+        id: 'lactic',
+        name: '乳酸菌飲料',
+        description: "農工大の乳牛による新鮮な生乳を使用",
+        unit: '500ml',
+        price: 500,
+      }
+    ]
+  }
+  
   // 毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！
   const misoProduct = {
     name: "エンレイ大豆味噌",
@@ -112,6 +126,7 @@ const getShopItems = () => {
   }
   return {
     beerProducts,
+    misonyuProducts,
     misoProduct,
     lacticProduct
   }

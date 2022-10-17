@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useRouter } from 'next/router';
 import { entranceVisitType } from "lib/converters";
 import Select from 'react-select';
+import { toast } from "react-toastify";
 
 // @ts-ignore
 const fetcher = (...args) => fetch(...args).then(res => res.json())
@@ -39,21 +40,52 @@ const EntranceEdit = () => {
   const submit = () => {    
     // TODO: 送信処理
     // TODO: 完了したよToastを表示
-    if (data.userType === 'nokodaisei') {
-      // @ts-ignore
-      const eleventhData = eleventh ? eleventh.value : reserved ? data.eleventh : 0;
-      // @ts-ignore
-      const twelfthData = twelfth ? twelfth.value : reserved ? data.twelfth : 0;
-      // @ts-ignore
-      const thirteenthData = thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
-    } else {
-      const eleventhData = eleventh != null ? eleventh ? 1 : 0 : reserved ? data.eleventh : 0;
-      const twelfthData = twelfth != null ? twelfth ? 1 : 0 : reserved ? data.twelfth : 0;
-      const thirteenthData = thirteenth != null ? thirteenth ? 1 : 0 : reserved ? data.thirteenth : 0;
-      // @ts-ignore
-      const accompaniersData = accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
+    // @ts-ignore
+    const eleventhData = eleventh ? eleventh.value : reserved ? data.eleventh : 0;
+    // @ts-ignore
+    const twelfthData = twelfth ? twelfth.value : reserved ? data.twelfth : 0;
+    // @ts-ignore
+    const thirteenthData = thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
+    // @ts-ignore
+    const accompaniersData = data.userType === 'nokodaisei' ? 0 : accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
+    console.log(data)
+    // 注文をしている人は予約を取り消せない
+    if ((data.original || data.sour || data.miso || data.lactic) && !(eleventhData || twelfthData || thirteenthData)) {
+      alert('注文をしている人は予約を取り消せません');
+      return;
     }
-    router.push('/entrance');
+    // 味噌乳酸菌を注文している人は予約を取り消せない
+    if ((data.miso || data.lactic) && !thirteenthData) {
+      alert('味噌乳酸菌を注文している人は13日の予約を取り消せません');
+      return;
+    }
+
+
+    // api/entranceにPATCH
+    fetch('/api/entrance', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        eleventh: eleventhData,
+        twelfth: twelfthData,
+        thirteenth: thirteenthData,
+        accompaniers: accompaniersData
+      })
+    }).then((res) => {
+      if (res.status === 200) {
+        // 値が問題ないことを完了したことを確認してからToastを表示する
+        toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
+          position: 'bottom-center',
+          draggable: true,
+        });
+
+        router.push('/entrance');
+      } else {
+        alert('エラーが発生しました。');
+      }
+    });
   }
   return (
     <div className="w-full px-4">
