@@ -1,5 +1,5 @@
 // TODO: 選択不可能な項目を非表示にする。特に学生
-import { entranceProps } from "../../types"
+import Link from 'next/link';
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { useRouter } from 'next/router';
@@ -38,18 +38,15 @@ const EntranceEdit = () => {
       router.push('/');
     }
   }
-  const submit = () => {    
-    // TODO: 送信処理
-    // TODO: 完了したよToastを表示
+  const submit = () => {
     // @ts-ignore
-    const eleventhData = eleventh ? eleventh.value : reserved ? data.eleventh : 0;
+    const eleventhData = eleventh == true ? 1 : eleventh == false ? 0 : eleventh ? eleventh.value : reserved ? data.eleventh : 0;
     // @ts-ignore
-    const twelfthData = twelfth ? twelfth.value : reserved ? data.twelfth : 0;
+    const twelfthData = twelfth == true ? 1 : twelfth == false ? 0 : twelfth ? twelfth.value : reserved ? data.twelfth : 0;
     // @ts-ignore
-    const thirteenthData = thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
+    const thirteenthData = thirteenth == true ? 1 : thirteenth == false ? 0 : thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
     // @ts-ignore
     const accompaniersData = data.userType === 'nokodaisei' ? 0 : accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
-    console.log(data)
     // 注文をしている人は予約を取り消せない
     if ((data.original || data.sour || data.miso || data.lactic) && !(eleventhData || twelfthData || thirteenthData)) {
       alert('注文をしている人は予約を取り消せません');
@@ -84,12 +81,24 @@ const EntranceEdit = () => {
 
         router.push('/entrance?reserved=true');
       } else {
-        alert('エラーが発生しました。');
+        alert('エラーが発生しました。再度読み込みます。');
+        router.reload();
       }
     });
   }
   return (
     <div className="w-full px-4">
+      <div className="flex items-center">
+        <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+        <pre>{' > '}</pre>
+        {reserved &&
+          <>
+            <Link href="/entrance"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">来場確認</h1></a></Link>
+            <pre>{' > '}</pre>
+          </>
+        }
+        <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "来場の予約"}</h1>
+      </div>
       <div className="m-4">
         <div className="text-lg font-medium">
           ご来場日

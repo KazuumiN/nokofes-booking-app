@@ -14,7 +14,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const ShoppingView = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/shopping', fetcher);
+  const { data, error } = useSWR('/api/shopping', fetcher, { revalidateOnMount: true });
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
@@ -29,7 +29,11 @@ const ShoppingView = () => {
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">予約の確認</h1>
+      <div className="flex items-center self-start">
+        <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+        <pre>{' > '}</pre>
+        <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5">予約一覧</h1>
+      </div>
       {!!data.order.original && 
         <ProductPreviewCard image={Original} order={data.order.original} {...data.shopItems.beerProducts.items[0]} />
       }
@@ -51,6 +55,13 @@ const ShoppingView = () => {
       <Link href="/shopping/edit">
         <a className="w-full text-center rounded-md border border-transparent bg-gray-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-50">予約を修正する</a>
       </Link>
+      <div className="mt-3 text-center text-sm">
+        <Link href="/">
+          <a className="text-lg p-4 text-gray-600 hover:text-gray-500">
+            戻る
+          </a>
+        </Link>
+      </div>
     </div>
   )
 }

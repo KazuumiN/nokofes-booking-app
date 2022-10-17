@@ -9,6 +9,7 @@ const eachLimit = 6
 const patchEntrance = async (token: any, data: any) => {
   const { sub } = token;
   let { eleventh, twelfth, thirteenth, accompaniers } = data;
+  console.log(data)
 
   if (checkUserType(token) === 'nokodaisei') {
     eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;

@@ -1,5 +1,5 @@
 // TODO: 申し込みの受付が完了した時、その旨のメッセージを表示する。
-
+// TODO: 先に入場予約してねメッセージを表示する。
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -38,20 +38,20 @@ const Home: NextPage = () => {
 
       <div className="flex justify-between px-3">
         <Link href={entranceReserved ? "/entrance" : "/entrance/edit"} >
-          <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 rounded whitespace-pre-wrap"
+          <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
           >
             {entranceReserved ? "入場予約\n確認修正" : "入場予約\n申し込み"}
           </a>
         </Link>
         {entranceReserved ? (
           <Link href={shoppingReserved ? "/shopping" : "/shopping/edit"} >
-          <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 rounded whitespace-pre-wrap"
+          <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
           >
             {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
           </a>
         </Link>
         ) : (
-          <p className="bg-gray-500 text-white font-bold py-4 px-8 rounded whitespace-pre-wrap"
+          <p className="bg-gray-500 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
           >
             {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
           </p>

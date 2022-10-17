@@ -7,8 +7,8 @@ import getOrCreateUser from "lib/api/getOrCreateUser"
 const stock = {
   original: 150,
   sour: 150,
-  miso: 100,
-  lactic: 100,
+  miso: 200,
+  lactic: 200,
 }
 // みそにゅーの受け取り日時の制限を定義
 const whenToBuyLimit = 60
@@ -28,12 +28,17 @@ const getStock = async (order: any) => {
   })
 
   // 自分の注文分も合わせてstockに足す
-  stock.original = stock.original + original - (orderedCount._sum.original || 0)
-  stock.sour = stock.sour + sour - (orderedCount._sum.sour || 0)
-  stock.miso = stock.miso + miso - (orderedCount._sum.miso || 0)
-  stock.lactic = stock.lactic + lactic - (orderedCount._sum.lactic || 0)
+  const stockOriginal = stock.original + original - (orderedCount._sum.original || 0)
+  const stockSour = stock.sour + sour - (orderedCount._sum.sour || 0)
+  const stockMiso = stock.miso + miso - (orderedCount._sum.miso || 0)
+  const stockLactic = stock.lactic + lactic - (orderedCount._sum.lactic || 0)
 
-  return stock
+  return {
+    original: stockOriginal,
+    sour: stockSour,
+    miso: stockMiso,
+    lactic: stockLactic,
+  }
 }
 
 const getShopItems = () => {
@@ -59,20 +64,20 @@ const getShopItems = () => {
   }
 
   const misonyuProducts = {
-    name: "味噌乳酸菌市",
+    name: "味噌・乳酸菌市",
     description: "毎年大人気のみそにゅーですが、今年は事前予約制の限定販売です。農工大産のこだわりの逸品をどうぞ！",
     items: [
       {
         id: 'miso',
         name: 'エンレイ大豆味噌',
-        description: '天然醸造の生味噌を学園祭のお土産に',
+        description: '天然醸造の生味噌をぜひお土産に',
         unit: '900g',
         price: 500,
       },
       {
         id: 'lactic',
         name: '乳酸菌飲料',
-        description: "農工大の乳牛による新鮮な生乳を使用",
+        description: "農工大乳牛の搾りたて生乳を使用",
         unit: '500ml',
         price: 500,
       }
@@ -139,33 +144,6 @@ const patchShopping = async (token: any, data: any) => {
   
   // トランザクション処理
   return await client.$transaction(async (tx) => {
-    const users = await tx.attendee.aggregate({
-      _sum: {
-        original: true,
-        sour: true,
-        miso: true,
-        lactic: true,
-      }
-    })
-
-    //if (users._sum.original + userEleventhNum > eachLimit || users._sum.numberOnTwelfth + userTwelfthNum > eachLimit || users._sum.numberOnThirteenth + userThirteenthNum > eachLimit) {
-    if (users._sum.original + original > stock.original || users._sum.sour + sour > stock.sour || users._sum.miso + miso > stock.miso || users._sum.lactic + lactic > stock.lactic) {
-      throw new Error('在庫数の上限を超えています')
-    }
-
-    if (whenToBuy) {
-      const whenToBuyCurrent = await tx.attendee.count({
-        where: {
-          whenToBuy: whenToBuy,
-        }
-      })
-      // TODO: 元々選んでた時の対処ができてない
-      if (whenToBuyCurrent + 1 > whenToBuyLimit) {
-        throw new Error('受け取り日時の上限を超えています')
-      }
-    }
-
-
     const user = await tx.attendee.update({
       data: {
         original,
@@ -178,6 +156,34 @@ const patchShopping = async (token: any, data: any) => {
         id: sub
       },
     })
+
+    const users = await tx.attendee.aggregate({
+      _sum: {
+        original: true,
+        sour: true,
+        miso: true,
+        lactic: true,
+      }
+    })
+
+    if ((users._sum.original || 0) > stock.original || (users._sum.sour || 0) > stock.sour || (users._sum.miso || 0) > stock.miso || (users._sum.lactic || 0) > stock.lactic) {
+      throw new Error('在庫数の上限を超えています')
+    }
+
+
+    if (whenToBuy) {
+      const whenToBuyCurrent = await tx.attendee.count({
+        where: {
+          whenToBuy: whenToBuy,
+        }
+      })
+      // updateした後なので足し合わせる必要がない
+      if (whenToBuyCurrent > whenToBuyLimit) {
+        throw new Error('受け取り日時の上限を超えています')
+      }
+    }
+
+
     // 注文をしている人は予約を取り消せない
     if ((user.original || user.sour || user.miso || user.lactic) && !(user.eleventh || user.twelfth || user.thirteenth)) {
       throw new Error ('物販予約済みなのに入場予約しないのはまずい（おそらくローカルで処理するはずのエラー）')

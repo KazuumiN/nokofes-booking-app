@@ -13,6 +13,7 @@ import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 
 // @ts-ignore
@@ -40,6 +41,12 @@ const ShoppingForm = () => {
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
+  if (!(data.order.eleventh || data.order.twelfth || data.order.thirteenth)) {
+    // 予約していないため/editへ飛ばす。（本来は見えないはずの画面）
+    router.push('/entrance/edit');
+    alert('予約販売には入場予約を行う必要があります。')
+    return <p>予約ページに遷移します...</p>;
+  }
 
   const pricing = 900 * originalCount + 900 * sourCount + 500 * misoCount + 500 * lacticCount;
   const reserved = !!(data.order.original || data.order.sour || data.order.miso || data.order.lactic);
@@ -61,9 +68,8 @@ const ShoppingForm = () => {
     }
   }
   const submit = () => {
-    // TODO: まだ予約していないかつ来場日にチェックが入っていない場合、警告を表示して送信をさせない。
     const whenToBuyData = whenToBuy ? whenToBuy : whenToBuy==null ? data.order.whenToBuy : 0;
-
+    
     if (!checkIfAnythingChanged()) {
       if (reserved) {
         router.push('/shopping');
@@ -113,7 +119,17 @@ const ShoppingForm = () => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col space-y-4 px-2">
-        <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
+        <div className="flex items-center">
+          <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+          <pre>{' > '}</pre>
+          {reserved &&
+            <>
+              <Link href="/shopping"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">予約一覧</h1></a></Link>
+              <pre>{' > '}</pre>
+            </>
+          }
+          <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
+        </div>
         <BeerCard
           counts={[originalCount, sourCount]}
           setCounts={[setOriginalCount, setSourCount]}
