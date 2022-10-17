@@ -82,7 +82,7 @@ const EntranceEdit = () => {
           draggable: true,
         });
 
-        router.push('/entrance');
+        router.push('/entrance?reserved=true');
       } else {
         alert('エラーが発生しました。');
       }

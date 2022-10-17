@@ -17,7 +17,9 @@ const EntranceView = () => {
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>データを取得中...</p>;
 
-  if (!(data.eleventh || data.twelfth || data.thirteenth)) {
+  const reserved = router.query.reserved;
+
+  if (!(data.eleventh || data.twelfth || data.thirteenth) && !reserved) {
     // 予約していないため/editへ飛ばす
     router.push('/entrance/edit');
     return <p>予約ページに遷移します...</p>;

@@ -17,9 +17,10 @@ const ShoppingView = () => {
   const { data, error } = useSWR('/api/shopping', fetcher);
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>データを取得中...</p>;
-  
+
+  const reserved = router.query.reserved;
   const pricing = 900 * data.order.original + 900 * data.order.sour + 500 * data.order.miso + 500 * data.order.lactic;
-  if (!pricing) {
+  if (!pricing && !reserved) {
     // 料金=0なら予約していないため/editへ飛ばす
     router.push('/shopping/edit');
     return <p>予約ページに遷移します</p>

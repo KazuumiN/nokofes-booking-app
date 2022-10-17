@@ -104,8 +104,7 @@ const ShoppingForm = () => {
           position: 'bottom-center',
           draggable: true,
         });
-
-        router.push('/shopping');
+        router.push('/shopping?reserved=true');
       } else {
         alert('エラーが発生しました。');
       }
