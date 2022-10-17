@@ -6,11 +6,6 @@ import checkUserType from "lib/api/checkUserType"
 // 各日の一般の入場者数上限
 const eachLimit = 6
 
-const getEntrance = async (token: any) => {
-  // ユーザーを取得。無ければ作って取得
-  return await getOrCreateUser(token)
-}
-
 const patchEntrance = async (token: any, data: any) => {
   const { sub } = token;
   let { eleventh, twelfth, thirteenth, accompaniers } = data;
@@ -77,7 +72,7 @@ const entranceApi = async (req, res) => {
     case 'GET':
       // @ts-ignore
       if (token) {
-        const user = await getEntrance(token)
+        const user = await getOrCreateUser(token)
         res.status(200).json(user)
       } else {
         // サインインしていない
@@ -89,11 +84,11 @@ const entranceApi = async (req, res) => {
       if (token) {
         const user = await patchEntrance(token, req.body)
         res.status(200).json(user)
-        return
+      } else {
+        // サインインしていない
+        res.status(401)
       }
-      res.status(200).json({ message: 'PATCH' })
-      break
-
+      return
     default:
       res.status(405).end()
       break
