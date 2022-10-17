@@ -96,6 +96,33 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
   )
 }
 
+export const ProductPreviewCard = ({image, order, ...props}: any) => {
+  return (
+    <div className="flex justify-between p-1">
+      <div className="flex space-x-2">
+        <div className='m-2'>
+          <Image src={image} alt={props.name} className="" width={81} height={108} />
+        </div>
+        <div className="flex flex-col justify-between mb-2 py-2">
+          <div className="flex space-x-8 items-end justify-between">
+            <p className='text-[21px] font-hina '>{props.name}</p>
+            <p className="text-gray-500 text-[15px] ">{props.unit}</p>
+          </div>
+          <p className='text-xs'>
+            {props.description}
+          </p>
+          <div className="flex items-center justify-end space-x-4">
+            <div className="flex items-center self-end space-x-0.5">
+              <p className="text-xl">{props.price}円<span className="text-sm">(税込)</span></p>
+              <p className="text-lg">×</p>
+              <p className="text-xl">{order}<span className='text-lg'>つ</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...props}: any) => {
   return (

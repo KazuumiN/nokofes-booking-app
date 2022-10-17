@@ -8,7 +8,6 @@ import { useEffect, useState, useRef } from "react";
 import useSWR from "swr";
 import { useRouter } from 'next/router';
 import Select from 'react-select';
-import Beer from 'assets/beer.png';
 import Original from 'assets/original.jpg';
 import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
