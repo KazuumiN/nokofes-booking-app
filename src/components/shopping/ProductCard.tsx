@@ -14,10 +14,9 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
         </div>
         <div className="flex flex-col space-y-2">
           {props.items.map((item: any, index: number) => {
-            setCounts[index](buyAmountInitials[index])
             const isLast = props.items.length - 1 === index;
             return (
-              <>
+              <div key={item.name}>
               <div className="flex justify-between p-1">
                 <div className="flex space-x-2">
                   <div className='m-2'>
@@ -42,13 +41,61 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
                 </div>
               </div>
               {!isLast && <hr />}
-            </>
+            </div>
           )})}
         </div>
       </div>
     </section>
   )
 }
+
+export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stocks, ...props}: any) => {
+  return (
+    <section className='flex flex-col items-end space-y-4'>
+      {/* <OldPriceCard price={props.price} /> */}
+      <div className="rounded-md flex flex-col py-1 space-y-1">
+        <div className="flex flex-col justify-between p-2 px-3 bg-[#123F77] text-white">
+          <h3 className="text-3xl font-hina mb-1">{props.name}</h3>
+          <p className="text-xs  whitespace-pre-wrap">{props.description}</p>
+        </div>
+        <p className='text-left'>※日曜日のみ受け取り可能</p>
+        <div className="flex flex-col space-y-2">
+          {props.items.map((item: any, index: number) => {
+            const isLast = props.items.length - 1 === index;
+            return (
+              <div key={item.name}>
+              <div className="flex justify-between p-1">
+                <div className="flex space-x-2">
+                  <div className='m-2'>
+                    <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
+                  </div>
+                  <div className="flex flex-col justify-between mb-2 py-2">
+                    <div className="flex space-x-8 items-end justify-between">
+                      <p className='text-[21px] font-hina '>{item.name}</p>
+                      <p className="text-gray-500 text-[15px] ">{item.unit}</p>
+                    </div>
+                    <p className='text-xs'>
+                      {item.description}
+                    </p>
+                    <div className="flex items-center space-x-4">
+                      <StockStatus stock={stocks[index]} />
+                      <div className="flex items-center self-end space-x-2" key={item.name}>
+                        <p className="text-xl">{item.price}円<span className="text-sm">(税込)</span></p>
+                        <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {!isLast && <hr />}
+            </div>
+          )})}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 
 export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...props}: any) => {
   return (

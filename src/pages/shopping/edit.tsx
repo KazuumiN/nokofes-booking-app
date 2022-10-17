@@ -1,6 +1,6 @@
-import { ProductCard, BeerCard } from "../../components/shopping/ProductCard";
+import { ProductCard, BeerCard, MisonyuCard } from "../../components/shopping/ProductCard";
 import { shoppingProps, productType } from "../../types"
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useSWR from "swr";
 import { useRouter } from 'next/router';
 import Select from 'react-select';
@@ -23,15 +23,33 @@ const ShoppingForm = () => {
   const [lacticCount, setLacticCount] = useState(0);
   const [whenToBuy, setWhenToBuy] = useState(0);
   const { data, error } = useSWR('/api/shopping', fetcher);
+  const ref = useRef(0);
+  useEffect(() => {
+    if (!ref.current && data) {
+      setOriginalCount(data.order.original);
+      setSourCount(data.order.sour);
+      setMisoCount(data.order.miso);
+      setLacticCount(data.order.lactic);
+      setWhenToBuy(data.order.whenToBuy);
+      ref.current = 1;
+    }
+  }, [data]);
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>データを取得中...</p>;
-  // TODO: dataの中身は標準で表示させるのみ。新しいstateも作る。
+
 
   const pricing = 900 * originalCount + 900 * sourCount + 500 * misoCount + 500 * lacticCount;
 
   const reserved = !!(data.order.original || data.order.sour || data.order.miso || data.order.lactic);
   
   const buyingMisonyu = !(misoCount==0 && lacticCount==0)
+
+  const checkIfAnythingChanged = () => {
+    if (originalCount == data.order.original && sourCount == data.order.sour && misoCount == data.order.miso && lacticCount == data.order.lactic && whenToBuy == data.order.whenToBuy) {
+      return false;
+    }
+    return true;
+  }
   
   const cancel = () => {
     // TODO: 記入済みのデータが消える警告モーダルを表示
@@ -42,8 +60,19 @@ const ShoppingForm = () => {
     }
   }
   const submit = () => {
+    console.log('submit');
+    console.log(originalCount);
+    console.log(sourCount);
+    console.log(misoCount);
+    console.log(lacticCount);
+    console.log(whenToBuy);
     // TODO: まだ予約していないかつ来場日にチェックが入っていない場合、警告を表示して送信をさせない。
     const whenToBuyData = whenToBuy ? whenToBuy : whenToBuy==null ? data.order.whenToBuy : 0;
+
+    if (!checkIfAnythingChanged()) {
+      cancel();
+    }
+    
     if (buyingMisonyu && !whenToBuyData) {
       alert('受け取り日時を選択してください');
       return
@@ -52,7 +81,10 @@ const ShoppingForm = () => {
 
 
     // TODO: 値が問題ないことを完了したことを確認してからToastを表示する
-    toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {position: 'bottom-center'});
+    toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
+      position: 'bottom-center',
+      draggable: true,
+    });
 
     router.push('/shopping');
   }
@@ -63,8 +95,8 @@ const ShoppingForm = () => {
   
   return (
     <div className="flex flex-col">
-      <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
-      <div className="flex flex-col space-y-8 px-2">
+      <div className="flex flex-col space-y-4 px-2">
+        <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
         <BeerCard
           counts={[originalCount, sourCount]}
           setCounts={[setOriginalCount, setSourCount]}
@@ -73,6 +105,31 @@ const ShoppingForm = () => {
           stocks={[data.stock.original, data.stock.sour]}
           {...data.shopItems.beerProducts}
         />
+        <MisonyuCard
+          counts={[misoCount, lacticCount]}
+          setCounts={[setMisoCount, setLacticCount]}
+          buyAmountInitials={[data.order.miso, data.order.lactic]}
+          images={[Miso, Lactic]}
+          stocks={[data.stock.miso, data.stock.lactic]}
+          {...data.shopItems.misonyuProducts}
+        />
+        {buyingMisonyu && (
+          <div className="flex flex-col items-start justify-between p-3">
+            <dt className="text-xl font-semibold text-gray-900">受け取り日時</dt>
+            <p>
+              {'味噌乳酸菌の受け取りは、受付可能な日時が限定されています。'}
+            </p>
+            <Select
+              className="self-end"
+              options={options}
+              defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
+              isClearable={true}
+              onChange={(e) => setWhenToBuy(e)}
+              isSearchable={false}
+            />
+          </div>
+        )}
+        {/* 
         <div className="flex flex-col space-y-4 border-4 border-neutral-500 -m-2 p-2">
           <p className="self-end -mb-2">※日曜日のみ受け取り可能</p>
           <ProductCard
@@ -91,27 +148,12 @@ const ShoppingForm = () => {
             stocks={[data.stock.lactic]}
             {...data.shopItems.lacticProduct}
           />
-          {buyingMisonyu && (
-            <div className="flex flex-col items-start justify-between p-3">
-              <dt className="text-xl font-semibold text-gray-900">受け取り日時</dt>
-              <p>
-                {'味噌乳酸菌の受け取りは、受付可能な日時が限定されています。'}
-              </p>
-              <Select
-                className="self-end"
-                options={options}
-                defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
-                isClearable={true}
-                onChange={(e) => setWhenToBuy(e)}
-                isSearchable={false}
-              />
-            </div>
-          )}
         </div>
+         */}
       </div>
       <section
         aria-labelledby="summary-heading"
-        className="my-16 rounded-lg bg-gray-50 px-4 py-6"
+        className="mt-16 rounded-lg bg-gray-50 px-4 py-6"
       >
         <dl className="space-y-4">
           <div className="flex items-center justify-between">
@@ -128,10 +170,10 @@ const ShoppingForm = () => {
             {reserved ? "予約を更新する" : "予約する"}
           </button>
         </div>
-        <div className="mt-6 text-center text-sm">
+        <div className="mt-3 text-center text-sm">
           <button
             type="button"
-            className="text-lg text-green-600 hover:text-green-500"
+            className="text-lg p-4 text-green-600 hover:text-green-500"
             onClick={cancel}
           >
             戻る

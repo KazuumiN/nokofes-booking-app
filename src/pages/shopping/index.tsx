@@ -30,10 +30,10 @@ const ShoppingView = () => {
   return (
     <div>
       <h1>予約内容</h1>
-      {!!data.original && <p>オリジナルビール: {data.original}本</p>}
-      {!!data.sour && <p>サワービール: {data.sour}本</p>}
-      {!!data.miso && <p>味噌: {data.miso}個</p>}
-      {!!data.lactic && <p>乳酸菌飲料: {data.lactic}本</p>}
+      {!!data.order.original && <p>オリジナルビール: {data.order.original}本</p>}
+      {!!data.order.sour && <p>サワービール: {data.order.sour}本</p>}
+      {!!data.order.miso && <p>味噌: {data.order.miso}個</p>}
+      {!!data.order.lactic && <p>乳酸菌飲料: {data.order.lactic}本</p>}
     </div>
   )
 }
