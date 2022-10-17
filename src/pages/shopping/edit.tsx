@@ -1,3 +1,7 @@
+// TODO: 入場予約が行われてない場合入場予約ページに飛ばす案内と処理
+// TODO: みそにゅうを予約しようとした人が日曜日の入場予約を行っていない場合、入場予約ページに飛ばす。
+// TODO: 在庫がない時はその予約項目を隠す&みそにゅうは人数制限に達した時に隠す&&人数制限の項目は都度隠していく
+
 import { ProductCard, BeerCard, MisonyuCard } from "../../components/shopping/ProductCard";
 import { shoppingProps, productType } from "../../types"
 import { useEffect, useState, useRef } from "react";
@@ -70,23 +74,43 @@ const ShoppingForm = () => {
     const whenToBuyData = whenToBuy ? whenToBuy : whenToBuy==null ? data.order.whenToBuy : 0;
 
     if (!checkIfAnythingChanged()) {
-      cancel();
+      if (reserved) {
+        router.push('/shopping');
+      } else {
+        router.push('/');
+      }
     }
     
     if (buyingMisonyu && !whenToBuyData) {
       alert('受け取り日時を選択してください');
       return
     }
-    // TODO: 送信処理
+    // api/shoppingにPATCH
+    fetch('/api/shopping', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        original: originalCount,
+        sour: sourCount,
+        miso: misoCount,
+        lactic: lacticCount,
+        whenToBuy: whenToBuyData
+      })
+    }).then((res) => {
+      if (res.status === 200) {
+        // 値が問題ないことを完了したことを確認してからToastを表示する
+        toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
+          position: 'bottom-center',
+          draggable: true,
+        });
 
-
-    // TODO: 値が問題ないことを完了したことを確認してからToastを表示する
-    toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
-      position: 'bottom-center',
-      draggable: true,
+        router.push('/shopping');
+      } else {
+        alert('エラーが発生しました。');
+      }
     });
-
-    router.push('/shopping');
   }
 
   const options = data.times.map((time:any) => (

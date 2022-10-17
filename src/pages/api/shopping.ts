@@ -3,39 +3,16 @@ import client from "lib/prismadb"
 import checkUserType from "lib/api/checkUserType"
 import getOrCreateUser from "lib/api/getOrCreateUser"
 
-// @ts-ignore
-const shoppingApi = async (req, res) => {
-  // @ts-ignore
-  const token = await getToken({ req })
-  if (token) {
-    // Signed in
-    const order = await getOrder(token)
-    const stock = await getStock(order)
-    const shopItems = getShopItems()
-    const data = { order, stock, shopItems, times }
-    console.log(data)
-    res.status(200).json(data)
-  } else {
-    // Not Signed in
-    res.status(401)
-  }
+// 在庫を定義
+const stock = {
+  original: 150,
+  sour: 150,
+  miso: 100,
+  lactic: 100,
 }
-
-const getOrder = async (token: any) => {
-  // ユーザーを取得。無ければ作って取得
-  return await getOrCreateUser(token)
-}
-
 const getStock = async (order: any) => {
   const { original, sour, miso, lactic } = order;
   
-  // 在庫を定義
-  const stock = {
-    original: 150,
-    sour: 150,
-    miso: 100,
-    lactic: 100,
-  }
 
   // 注文を取得
   const orderedCount = await client.attendee.aggregate({
@@ -150,5 +127,106 @@ const times = [
     remaining: 10,
   },
 ]
+
+const patchShopping = async (token: any, data: any) => {
+  const { sub } = token;
+  let { original, sour, miso, lactic, whenToBuy } = data;
+  console.log(data)
+
+  // 全て自然数であることを確認し、そうでない時はerror
+  if ((original < 0 || sour < 0 || miso < 0 || lactic < 0) && !(Number.isInteger(original) && Number.isInteger(sour) && Number.isInteger(miso) && Number.isInteger(lactic))) {
+    throw new Error("invalid input")
+  }
+  if (((miso || lactic) && ![1,2,3].includes(whenToBuy)) || ![0,1,2,3].includes(whenToBuy)) {
+    throw new Error("invalid whenToBuy")
+  }
+  
+  // トランザクション処理
+  return await client.$transaction(async (tx) => {
+    const users = await tx.attendee.aggregate({
+      _sum: {
+        original: true,
+        sour: true,
+        miso: true,
+        lactic: true,
+      }
+    })
+
+    //if (users._sum.original + userEleventhNum > eachLimit || users._sum.numberOnTwelfth + userTwelfthNum > eachLimit || users._sum.numberOnThirteenth + userThirteenthNum > eachLimit) {
+    if (users._sum.original + original > stock.original || users._sum.sour + sour > stock.sour || users._sum.miso + miso > stock.miso || users._sum.lactic + lactic > stock.lactic) {
+      throw new Error('在庫数の上限を超えています')
+    }
+
+    if (whenToBuy) {
+      const whenToBuyCurrent = await tx.attendee.count({
+        where: {
+          whenToBuy: whenToBuy,
+        }
+      })
+      if (whenToBuyCurrent + 1 > 60) {
+        throw new Error('受け取り日時の上限を超えています')
+      }
+    }
+
+
+    const user = await tx.attendee.update({
+      data: {
+        original,
+        sour,
+        miso,
+        lactic,
+        whenToBuy,
+      },
+      where: { 
+        id: sub
+      },
+    })
+    // 注文をしている人は予約を取り消せない
+    if ((user.original || user.sour || user.miso || user.lactic) && !(user.eleventh || user.twelfth || user.thirteenth)) {
+      throw new Error ('物販予約済みなのに入場予約しないのはまずい（おそらくローカルで処理するはずのエラー）')
+    }
+    // 味噌乳酸菌を注文している人は日曜日を取り消せない
+    if ((user.miso || user.lactic) && user.thirteenth === 0) {
+      throw new Error ('味噌乳酸菌を注文しているのに日曜日を取り消すのはまずい（おそらくローカルで処理するはずのエラー）')
+    }
+    return user
+  })
+}
+
+// @ts-ignore
+const shoppingApi = async (req, res) => {
+  // @ts-ignore
+  const token = await getToken({ req })
+  switch (req.method) {
+    case 'GET':
+      if (token) {
+        // Signed in
+        const order = await getOrCreateUser(token)
+        const stock = await getStock(order)
+        const shopItems = getShopItems()
+        const data = { order, stock, shopItems, times }
+        res.status(200).json(data)
+      } else {
+        // Not Signed in
+        res.status(401)
+      }
+      return 
+    case 'PATCH':
+      // @ts-ignore
+      if (token) {
+        const user = await patchShopping(token, req.body)
+        res.status(200).json(user)
+      } else {
+        // サインインしていない
+        res.status(401)
+      }
+      return
+    default:
+      res.status(405).end()
+      break
+  }
+}
+
+
 
 export default shoppingApi
