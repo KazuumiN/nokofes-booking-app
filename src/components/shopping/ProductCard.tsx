@@ -23,7 +23,7 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
                     <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
                   </div>
                   <div className="flex flex-col justify-between mb-2 py-2">
-                    <div className="flex space-x-8 items-end justify-between">
+                    <div className="flex items-end justify-between">
                       <p className='text-[23px] font-hina '>{item.name}</p>
                       <p className="text-gray-500 text-[15px] ">{item.unit}</p>
                     </div>
@@ -70,8 +70,8 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
                     <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
                   </div>
                   <div className="flex flex-col justify-between mb-2 py-2">
-                    <div className="flex space-x-8 items-end justify-between">
-                      <p className='text-[21px] font-hina '>{item.name}</p>
+                    <div className="flex items-end justify-between">
+                      <p className='text-[21px] font-hina'>{item.name}</p>
                       <p className="text-gray-500 text-[15px] ">{item.unit}</p>
                     </div>
                     <p className='text-xs'>

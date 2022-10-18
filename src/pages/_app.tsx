@@ -39,9 +39,10 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   }, []);
   
   // TODO: 最終的にこれを反映する
-  if (new Date("2022-10-18T12:27:00+0900") > new Date()) {
+  const expiryTimestamp = new Date("2022-10-18T12:41:30+0900")
+  if (expiryTimestamp > new Date()) {
     // 予約開始前はタイマーを表示する早期リターン
-    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
+    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer expiryTimestamp={expiryTimestamp} /></>
   }
   return (
     <SessionProvider session={pageProps.session}>
