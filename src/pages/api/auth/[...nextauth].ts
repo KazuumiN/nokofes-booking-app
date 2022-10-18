@@ -1,5 +1,3 @@
-
-// TODO: 10/20の12時より前だったらログインを失敗させる（認証メール送信ロジックやLINE検証ロジック部分で日付判定しちゃってもいいかも）。
 import NextAuth from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import Credentials from "next-auth/providers/credentials"

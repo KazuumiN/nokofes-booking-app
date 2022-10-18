@@ -1,12 +1,11 @@
 import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
 import getOrCreateUser from "lib/api/getOrCreateUser"
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-// @ts-ignore
-const indexApi = async (req, res) => {
+const indexApi = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case 'GET':
-      // @ts-ignore
       const token = await getToken({ req })
       if (token) {
         const user = await getId(token)

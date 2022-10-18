@@ -1,16 +1,13 @@
 // TODO: 申し込みの受付が終了した時、その旨のメッセージを表示する。
-// TODO: 先に入場予約してねメッセージを表示する。
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
 const NumberAndQR = dynamic(() => import('components/NumberAndQR'),{ssr:false})
 import useSWR from "swr";
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const Home: NextPage = () => {
-  const { data, error } = useSWR('/api', fetcher);
+  const { data, error } = useSWR('/api');
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 

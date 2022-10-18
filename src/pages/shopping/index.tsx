@@ -1,5 +1,4 @@
 
-// @ts-nocheck
 import { ProductPreviewCard } from "components/shopping/ProductCard"
 import useSWR from "swr";
 import { useRouter } from 'next/router';
@@ -8,13 +7,10 @@ import Original from 'assets/original.jpg';
 import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then(res => res.json())
-
 
 const ShoppingView = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/shopping', fetcher, { revalidateOnMount: true });
+  const { data, error } = useSWR('/api/shopping', { revalidateOnMount: true });
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
@@ -25,7 +21,6 @@ const ShoppingView = () => {
     router.push('/shopping/edit');
     return <p>予約ページに遷移します</p>
   }
-  // TODO: 味噌の横幅が広がりすぎてるのを対応したい。
 
   return (
     <div className="flex flex-col items-center space-y-4">

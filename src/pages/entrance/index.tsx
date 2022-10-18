@@ -1,22 +1,17 @@
-// TODO: おしゃれにしたい
-import { useState } from 'react';
 import Link from 'next/link';
 import useSWR from "swr";
 import { useRouter } from 'next/router';
 import { entranceVisitType } from "lib/converters";
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then(res => res.json())
-
 const EntranceView = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/entrance', fetcher, { revalidateOnMount: true });
+  const { data, error } = useSWR('/api/entrance', { revalidateOnMount: true });
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
   const reserved = router.query.reserved;
 
-  if (!(data.eleventh || data.twelfth || data.thirteenth) && !reserved) {
+  if (!(data.user.eleventh || data.user.twelfth || data.user.thirteenth) && !reserved) {
     // 予約していないため/editへ飛ばす
     router.push('/entrance/edit');
     return <p>予約ページに遷移します...</p>;
@@ -32,45 +27,45 @@ const EntranceView = () => {
         <h1 className="text-3xl font-bold font-hina text-center my-2">ご来場日</h1>
         <h2 className='text-xl my-2'>&nbsp;&nbsp;今年度の学園祭の開催期間は<br/>11月11日〜11月13日の3日間です。</h2>
         <div className='text-xl'>
-          {data.userType === 'nokodaisei' ?
+          {data.user.userType === 'nokodaisei' ?
           (
             <ul className="ml-2">
               <li className="mt-4 sm:col-span-2 sm:mt-0">
-                11日 (金) : {entranceVisitType(data.eleventh)}
+                11日 (金) : {entranceVisitType(data.user.eleventh)}
               </li>
               <li className="mt-4 sm:col-span-2 sm:mt-0">
-                12日 (土) : {entranceVisitType(data.twelfth)}
+                12日 (土) : {entranceVisitType(data.user.twelfth)}
               </li>
               <li className="mt-4 sm:col-span-2 sm:mt-0">
-                13日 (日) : {entranceVisitType(data.thirteenth)}
+                13日 (日) : {entranceVisitType(data.user.thirteenth)}
               </li>
             </ul>
           ) : (
             <ul className="ml-8 list-disc">
-              {data.eleventh ? (
+              {data.user.eleventh ? (
                 <li className="mt-4 sm:col-span-2 sm:mt-0">
                   11月11日（金）
                 </li>
               ) : (<></>)}
-              {data.twelfth ? (
+              {data.user.twelfth ? (
                 <li className="mt-4 sm:col-span-2 sm:mt-0">
                   11月12日（土）
                 </li>
               ) : (<></>)}
-              {data.thirteenth ? (
+              {data.user.thirteenth ? (
                 <li className="mt-4 sm:col-span-2 sm:mt-0">
                   11月13日（日）
                 </li>
               ) : (<></>)}
             </ul>
           )}
-          {data.userType === 'general' && (
+          {data.user.userType === 'general' && (
             <>
               <p className="mt-8 font-medium">
                 同伴者数
               </p>
               <p className="mt-4 ml-8 sm:col-span-2 sm:mt-0">
-                {data.accompaniers}名
+                {data.user.accompaniers}名
               </p>
             </>
           )}

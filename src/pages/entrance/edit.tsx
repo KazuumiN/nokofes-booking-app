@@ -1,4 +1,3 @@
-// TODO: 選択不可能な項目を非表示にする。特に学生
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -7,12 +6,9 @@ import { entranceVisitType } from "lib/converters";
 import Select from 'react-select';
 import { toast } from "react-toastify";
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then(res => res.json())
-
 const EntranceEdit = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/entrance', fetcher);
+  const { data, error } = useSWR('/api/entrance');
   const [eleventh, setEleventh] = useState(null);
   const [twelfth, setTwelfth] = useState(null);
   const [thirteenth, setThirteenth] = useState(null);
@@ -22,18 +18,32 @@ const EntranceEdit = () => {
   
   const reserveMisonyu = router.query.reserve === 'misonyu';
 
-  const reserved = !!(data.eleventh || data.twelfth || data.thirteenth);
+  const reserved = !!(data.user.eleventh || data.user.twelfth || data.user.thirteenth);
 
-  const options = [0,1,2].map((i) => (
-    { value: i, label: entranceVisitType(i) }
-  ))
-  
+  // @ts-ignore
+  const eleventhData = eleventh == true ? 1 : eleventh == false ? 0 : eleventh ? eleventh.value : reserved ? data.user.eleventh : 0;
+  // @ts-ignore
+  const twelfthData = twelfth == true ? 1 : twelfth == false ? 0 : twelfth ? twelfth.value : reserved ? data.user.twelfth : 0;
+  // @ts-ignore
+  const thirteenthData = thirteenth == true ? 1 : thirteenth == false ? 0 : thirteenth ? thirteenth.value : reserved ? data.user.thirteenth : 0;
+  // @ts-ignore
+  const accompaniersData = data.user.userType === 'nokodaisei' ? 0 : accompaniers ? accompaniers.value : reserved ? data.user.accompaniers : 0;
+
   const accompaniersOptions = [0,1,2,3,4].map((i) => (
-    { value: i, label: i }
+    { value: i, label: i, isDisabled: ((eleventhData && (data.stock.eleventh < i+1))||(twelfthData && (data.stock.twelfth < i+1))||(thirteenthData && (data.stock.thirteenth < i+1))) }
+  ))
+
+  const optionsEleventh = [0,1,2].map((i) => (
+    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.eleventh < 1)}
+  ))
+  const optionsTwelfth = [0,1,2].map((i) => (
+    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.twelfth < 1)}
+  ))
+  const optionsThirteenth = [0,1,2].map((i) => (
+    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.thirteenth < 1)}
   ))
 
   const cancel = () => {
-    // TODO: 記入済みのデータが消える警告モーダルを表示
     if (reserved) {
       router.push('/entrance');
     } else {
@@ -41,16 +51,8 @@ const EntranceEdit = () => {
     }
   }
   const submit = () => {
-    // @ts-ignore
-    const eleventhData = eleventh == true ? 1 : eleventh == false ? 0 : eleventh ? eleventh.value : reserved ? data.eleventh : 0;
-    // @ts-ignore
-    const twelfthData = twelfth == true ? 1 : twelfth == false ? 0 : twelfth ? twelfth.value : reserved ? data.twelfth : 0;
-    // @ts-ignore
-    const thirteenthData = thirteenth == true ? 1 : thirteenth == false ? 0 : thirteenth ? thirteenth.value : reserved ? data.thirteenth : 0;
-    // @ts-ignore
-    const accompaniersData = data.userType === 'nokodaisei' ? 0 : accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
     // 注文をしている人は予約を取り消せない
-    if ((data.original || data.sour || data.miso || data.lactic) && !(eleventhData || twelfthData || thirteenthData)) {
+    if ((data.user.original || data.user.sour || data.user.miso || data.user.lactic) && !(eleventhData || twelfthData || thirteenthData)) {
       const toastWithLink = () => <div className="py-8"><Link href="/shopping/edit"><a>物品を予約されている方は入場を取り消せません。<br />ここをタップして物品予約ページに移動できます。</a></Link></div>;
       toast.warn(toastWithLink, {
         autoClose: false,
@@ -60,7 +62,7 @@ const EntranceEdit = () => {
       return;
     }
     // 味噌乳酸菌を注文している人は予約を取り消せない
-    if ((data.miso || data.lactic) && !thirteenthData) {
+    if ((data.user.miso || data.user.lactic) && !thirteenthData) {
       const toastWithLink = () => <div className="py-8"><Link href="/shopping/edit"><a>味噌乳酸菌を注文している人は13日の予約を取り消せません<br />ここをタップして物品予約ページに移動できます。</a></Link></div>;
       toast.warn(toastWithLink, {
         autoClose: false,
@@ -154,22 +156,22 @@ const EntranceEdit = () => {
       </div>
       <div className="m-4"><h1 className="text-3xl font-bold font-hina text-center my-2">ご来場お申し込み</h1>
         <h2 className='text-xl my-2'>&nbsp;&nbsp;今年度の学園祭の開催期間は<br/>11月11日〜11月13日の3日間です。</h2>
-        {reserved && data.userType === 'general' && (
+        {reserved && data.user.userType === 'general' && (
           <p>
             お申し込みを取り消されたい場合は、チェックを外して送信してください。
           </p>
         )}
         <div className="text-xl mt-4 sm:col-span-2 sm:mt-0">
 
-          {data.userType === 'nokodaisei' ? (
+          {data.user.userType === 'nokodaisei' ? (
             <div className="flex flex-col space-y-2">
               <div className="flex justify-between items-center">
                 <p className="text-lg">
                   11日
                 </p>
                 <Select
-                  options={options}
-                  defaultValue={reserved ? options[data.eleventh] : options[0]}
+                  options={optionsEleventh}
+                  defaultValue={reserved ? optionsEleventh[data.user.eleventh] : optionsEleventh[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setEleventh(e)
@@ -183,8 +185,8 @@ const EntranceEdit = () => {
                   12日
                 </p>
                 <Select
-                  options={options}
-                  defaultValue={reserved ? options[data.twelfth] : options[0]}
+                  options={optionsTwelfth}
+                  defaultValue={reserved ? optionsTwelfth[data.user.twelfth] : optionsTwelfth[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setTwelfth(e)
@@ -198,8 +200,8 @@ const EntranceEdit = () => {
                   13日
                 </p>
                 <Select
-                  options={options}
-                  defaultValue={reserved ? options[data.thirteenth] : options[0]}
+                  options={optionsThirteenth}
+                  defaultValue={reserved ? optionsThirteenth[data.user.thirteenth] : optionsThirteenth[0]}
                   onChange={(e) => {
                     // @ts-ignore
                     return setThirteenth(e)}
@@ -216,7 +218,8 @@ const EntranceEdit = () => {
                     id="eleventh"
                     name="eleventh"
                     type="checkbox"
-                    checked={eleventh != null ? eleventh : reserved ? data.eleventh : false}
+                    checked={eleventh != null ? eleventh : reserved ? data.user.eleventh : false}
+                    disabled={data.stock.eleventh < accompaniersData + 1}
                     onChange={(e) => {
                       // @ts-ignore
                       return setEleventh(e.target.checked)}
@@ -237,7 +240,8 @@ const EntranceEdit = () => {
                     id="twelfth"
                     name="twelfth"
                     type="checkbox"
-                    checked={twelfth != null ? twelfth : reserved ? data.twelfth : false}
+                    checked={twelfth != null ? twelfth : reserved ? data.user.twelfth : false}
+                    disabled={data.stock.twelfth < accompaniersData + 1}
                     onChange={(e) => {
                       // @ts-ignore
                       return setTwelfth(e.target.checked)}
@@ -258,7 +262,8 @@ const EntranceEdit = () => {
                     id="thirteenth"
                     name="thirteenth"
                     type="checkbox"
-                    checked={thirteenth != null ? thirteenth : reserved ? data.thirteenth : false}
+                    checked={thirteenth != null ? thirteenth : reserved ? data.user.thirteenth : false}
+                    disabled={data.stock.thirteenth < accompaniersData + 1}
                     onChange={(e) => {
                       // @ts-ignore
                       return setThirteenth(e.target.checked)}
@@ -277,7 +282,7 @@ const EntranceEdit = () => {
           )}
         </div>
       </div>
-      {data.userType === 'general' && (
+      {data.user.userType === 'general' && (
         <div className="m-4">
           <label htmlFor="accompaniers" className="text-lg font-medium ">
             同伴者数
@@ -285,7 +290,7 @@ const EntranceEdit = () => {
           <p className='text-sm'>&nbsp;&nbsp;基本的はお一人お一人でのお申し込みをお願いいたしております。<br />&nbsp;&nbsp;小学生以下のお子様など、スマホを持っておられない同伴者がいらっしゃる場合は同伴者数をご記入ください。</p>
           <Select
             options={accompaniersOptions}
-            defaultValue={reserved ? accompaniersOptions[data.accompaniers] : accompaniersOptions[0]}
+            defaultValue={reserved ? accompaniersOptions[data.user.accompaniers] : accompaniersOptions[0]}
             onChange={(e) => {
               // @ts-ignore
               return setAccompaniers(e)}

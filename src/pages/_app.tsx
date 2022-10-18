@@ -9,7 +9,7 @@ import Layout from "./layout";
 import LiffContext from "store/LiffContext";
 import Head from "next/head";
 import Timer from "components/Timer";
-import { useRouter } from "next/router";
+import { SWRConfig } from 'swr'
 import { ToastContainer } from 'react-toastify'
 import Router from 'next/router';
 import NProgress from 'nprogress';
@@ -22,8 +22,6 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
-  const [liffError, setLiffError] = useState<string | null>(null);
-  const router = useRouter();
 
   // liff.init()を実行するときにアプリが初期化される
   useEffect(() => {
@@ -31,21 +29,18 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
     import("@line/liff")
       .then((liff) => liff.default)
       .then((liff) => {
-        // console.log("LIFF init...");
         liff
           .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
           .then(() => {
-            // console.log("LIFF init succeeded.");
             setLiffObject(liff);
           })
           .catch((error: Error) => {
-            // console.log("LIFF init failed.");
-            setLiffError(error.toString());
           });
       });
   }, []);
   
   // TODO: 最終的にこれを反映する
+  // const expiryTimestamp = new Date("2022-10-20T12:00:00+0900")
   const expiryTimestamp = new Date("2022-10-18T12:41:30+0900")
   if (expiryTimestamp > new Date()) {
     // 予約開始前はタイマーを表示する早期リターン
@@ -54,12 +49,14 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   return (
     <SessionProvider session={pageProps.session}>
       <LiffContext.Provider value={liffObject}>
-        <Layout>
-          <div className="font-zenkaku">
-            <ToastContainer />
-            <Component {...pageProps} />
-          </div>
-        </Layout>
+        <SWRConfig value={{ fetcher: (url: string) => fetch(url).then((res) => res.json()) }}>
+          <Layout>
+            <div className="font-zenkaku">
+              <ToastContainer />
+              <Component {...pageProps} />
+            </div>
+          </Layout>
+        </SWRConfig>
       </LiffContext.Provider>
     </SessionProvider>
   )

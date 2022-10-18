@@ -1,4 +1,3 @@
-// TODO: 13日の予約受付がなされていないときはみそにゅうの予約を受け付けないようにする
 import { ProductCard, BeerCard, MisonyuCard } from "../../components/shopping/ProductCard";
 import { useEffect, useState, useRef } from "react";
 import useSWR from "swr";
@@ -12,9 +11,6 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import clsx from "clsx";
 
-// @ts-ignore
-const fetcher = (...args) => fetch(...args).then(res => res.json())
-
 const ShoppingForm = () => {
   const router = useRouter();
   const [originalCount, setOriginalCount] = useState(0);
@@ -23,7 +19,7 @@ const ShoppingForm = () => {
   const [lacticCount, setLacticCount] = useState(0);
   const [whenToBuy, setWhenToBuy] = useState(0);
   const [warnWhenToBuy, setWarnWhenToBuy] = useState(false);
-  const { data, error } = useSWR('/api/shopping', fetcher);
+  const { data, error } = useSWR('/api/shopping');
   const ref = useRef(0);
   useEffect(() => {
     // 初期値設定
@@ -76,7 +72,6 @@ const ShoppingForm = () => {
   }
   
   const cancel = () => {
-    // TODO: 記入済みのデータが消える警告モーダルを表示
     if (reserved) {
       router.push('/shopping');
     } else {

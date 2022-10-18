@@ -2,14 +2,33 @@ import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
 import getOrCreateUser from "lib/api/getOrCreateUser"
 import checkUserType from "lib/api/checkUserType"
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 // 各日の一般の入場者数上限
-const eachLimit = 20 // TODO: 本番環境では2800にする
+const eachLimit = 12 // TODO: 本番環境では2800にする
+
+const getStock = async (user: any) => {
+  const users = await client.attendee.aggregate({
+    _sum: {
+      numberOnEleventh: true,
+      numberOnTwelfth: true,
+      numberOnThirteenth: true,
+    }
+  })
+  // 自分の注文分も合わせてstockに足す
+  const stockEleventh = eachLimit + user.numberOnEleventh - (users._sum.numberOnEleventh || 0)
+  const stockTwelfth = eachLimit + user.numberOnTwelfth - (users._sum.numberOnTwelfth || 0)
+  const stockThirteenth = eachLimit + user.numberOnThirteenth - (users._sum.numberOnThirteenth || 0)
+  return {
+    eleventh: stockEleventh,
+    twelfth: stockTwelfth,
+    thirteenth: stockThirteenth,
+  }
+}
 
 const patchEntrance = async (token: any, data: any) => {
   const { sub } = token;
   let { eleventh, twelfth, thirteenth, accompaniers } = data;
-  console.log(data)
 
   if (checkUserType(token) === 'nokodaisei') {
     eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;
@@ -29,17 +48,6 @@ const patchEntrance = async (token: any, data: any) => {
   
   // トランザクション処理
   return await client.$transaction(async (tx) => {
-    const users = await tx.attendee.aggregate({
-      _sum: {
-        numberOnEleventh: true,
-        numberOnTwelfth: true,
-        numberOnThirteenth: true,
-      }
-    })
-
-    if (users._sum.numberOnEleventh + userEleventhNum > eachLimit || users._sum.numberOnTwelfth + userTwelfthNum > eachLimit || users._sum.numberOnThirteenth + userThirteenthNum > eachLimit) {
-      throw new Error('上限を超えています')
-    }
     const user = await tx.attendee.update({
       data: {
         eleventh: eleventh,
@@ -54,6 +62,17 @@ const patchEntrance = async (token: any, data: any) => {
         id: sub
       },
     })
+    const users = await tx.attendee.aggregate({
+      _sum: {
+        numberOnEleventh: true,
+        numberOnTwelfth: true,
+        numberOnThirteenth: true,
+      }
+    })
+
+    if ((users._sum.numberOnEleventh || 0) > eachLimit || (users._sum.numberOnTwelfth || 0) > eachLimit || (users._sum.numberOnThirteenth || 0) > eachLimit) {
+      throw new Error('上限を超えています')
+    }
     // 注文をしている人は予約を取り消せない
     if ((user.original || user.sour || user.miso || user.lactic) && !(eleventh || twelfth || thirteenth)) {
       throw new Error ('物販予約済みなのに入場予約しないのはまずい（おそらくローカルで処理するはずのエラー）')
@@ -66,22 +85,20 @@ const patchEntrance = async (token: any, data: any) => {
   })
 }
 
-// @ts-ignore
-const entranceApi = async (req, res) => {
+const entranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = await getToken({ req })
   switch (req.method) {
     case 'GET':
-      // @ts-ignore
       if (token) {
         const user = await getOrCreateUser(token)
-        res.status(200).json(user)
+        const stock = await getStock(user)
+        res.status(200).json({user, stock})
       } else {
         // サインインしていない
         res.status(401)
       }
       return
     case 'PATCH':
-      // @ts-ignore
       if (token) {
         const user = await patchEntrance(token, req.body)
         res.status(200).json(user)

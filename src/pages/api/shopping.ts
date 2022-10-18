@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt"
 import client from "lib/prismadb"
 import checkUserType from "lib/api/checkUserType"
 import getOrCreateUser from "lib/api/getOrCreateUser"
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 // 在庫を定義
 const stock = {
@@ -127,7 +128,6 @@ const getTimes = async () => {
 const patchShopping = async (token: any, data: any) => {
   const { sub } = token;
   let { original, sour, miso, lactic, whenToBuy } = data;
-  console.log(data)
 
   // 全て自然数であることを確認し、そうでない時はerror
   if ((original < 0 || sour < 0 || miso < 0 || lactic < 0) && !(Number.isInteger(original) && Number.isInteger(sour) && Number.isInteger(miso) && Number.isInteger(lactic))) {
@@ -142,8 +142,8 @@ const patchShopping = async (token: any, data: any) => {
     whenToBuy=0
   }
 
-  // 各商品は10までしか購入できない
-  if (original > 10 || sour > 10 || miso > 10 || lactic > 10) {
+  // TODO: ビールは、みそにゅーは5ずつまでしか購入できない
+  if (original > 10 || sour > 10 || miso > 5 || lactic > 5) {
     throw new Error("trying to buy too much")
   }
   
@@ -201,9 +201,7 @@ const patchShopping = async (token: any, data: any) => {
   })
 }
 
-// @ts-ignore
-const shoppingApi = async (req, res) => {
-  // @ts-ignore
+const shoppingApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = await getToken({ req })
   switch (req.method) {
     case 'GET':
@@ -221,7 +219,6 @@ const shoppingApi = async (req, res) => {
       }
       return 
     case 'PATCH':
-      // @ts-ignore
       if (token) {
         const user = await patchShopping(token, req.body)
         res.status(200).json(user)

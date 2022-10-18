@@ -81,7 +81,7 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
                       <StockStatus stock={stocks[index]} />
                       <div className="flex items-center self-end space-x-2" key={item.name}>
                         <p className="text-xl">{item.price}円<span className="text-sm">(税込)</span></p>
-                        <BuyAmountChanger stock={stocks[index]} limit={10} count={counts[index]} setCount={setCounts[index]} />
+                        <BuyAmountChanger stock={stocks[index]} limit={5} count={counts[index]} setCount={setCounts[index]} />
                       </div>
                     </div>
                   </div>

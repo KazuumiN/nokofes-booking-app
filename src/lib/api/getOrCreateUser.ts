@@ -25,7 +25,6 @@ const getOrCreateUser = async (token: any) => {
         break
       }
     }
-    // @ts-ignore
     user = await client.attendee.create({
       data: {
         id: token.sub,
