@@ -21,7 +21,7 @@ const SignIn = () => {
   };
   
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full px-2">
       ログインが必要です。
       <label htmlFor="email" className="block text-sm font-medium text-gray-700">
         Email
