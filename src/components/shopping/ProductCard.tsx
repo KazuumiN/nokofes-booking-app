@@ -34,7 +34,7 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
                       <StockStatus stock={stocks[index]} />
                       <div className="flex items-center self-end space-x-2" key={item.name}>
                         <p className="text-xl">{item.price}円<span className="text-sm">(税込)</span></p>
-                        <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
+                        <BuyAmountChanger stock={stocks[index]} limit={10} count={counts[index]} setCount={setCounts[index]} />
                       </div>
                     </div>
                   </div>
@@ -81,7 +81,7 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
                       <StockStatus stock={stocks[index]} />
                       <div className="flex items-center self-end space-x-2" key={item.name}>
                         <p className="text-xl">{item.price}円<span className="text-sm">(税込)</span></p>
-                        <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
+                        <BuyAmountChanger stock={stocks[index]} limit={10} count={counts[index]} setCount={setCounts[index]} />
                       </div>
                     </div>
                   </div>
@@ -152,13 +152,12 @@ export const ProductCard = ({counts, setCounts, buyAmountInitials, stocks, ...pr
                 </div>
                 <div className="flex justify-between" key={item.name}>
                   <StockStatus stock={stocks[index]} />
-
                   <div className="flex items-center space-x-3">
                     <p className="font-semibold text-gray-500">
                       {item.unit}
                     </p>
                     <p className="font-semibold">{item.price}円</p>
-                    <BuyAmountChanger stock={stocks[index]} limit={item.limit} count={counts[index]} setCount={setCounts[index]} />
+                    <BuyAmountChanger stock={stocks[index]} limit={10} count={counts[index]} setCount={setCounts[index]} />
                   </div>
                 </div>
               </div>
