@@ -39,10 +39,10 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   }, []);
   
   // TODO: 最終的にこれを反映する
-  // if (new Date("2022-10-20T12:00:00+0900") > new Date()) {
-  //   // 予約開始前はタイマーを表示する早期リターン
-  //   return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
-  // }
+  if (new Date("2022-10-18T12:27:00+0900") > new Date()) {
+    // 予約開始前はタイマーを表示する早期リターン
+    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer /></>
+  }
   return (
     <SessionProvider session={pageProps.session}>
       <LiffContext.Provider value={liffObject}>
