@@ -60,7 +60,9 @@ const EntranceEdit = () => {
       return;
     }
 
-
+    const id = toast.loading("送信中...", {
+      position: 'bottom-center',
+    })
     // api/entranceにPATCH
     fetch('/api/entrance', {
       method: 'PATCH',
@@ -77,23 +79,39 @@ const EntranceEdit = () => {
       if (res.status === 200) {
         // 値が問題ないことを完了したことを確認してからToastを表示する
         if (reserveMisonyu && thirteenthData) {
-          toast.success('13日の予約が完了しました。物品予約ページへ戻ります。', {
+          toast.update(id, {
+            render: '13日の予約が完了しました。物品予約ページへ戻ります。',
+            type: "success",
+            isLoading: false,
             position: 'bottom-center',
-            autoClose: 5000,
+            draggable: true,
+            autoClose: 5000
           });
           setTimeout(() => {
             router.push('/shopping/edit');
           }, 1000);
           return;
         }
-        toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
+        const text = reserved ? '予約を更新しました' : '予約を受け付けました'
+        toast.update(id, {
+          render: text,
+          type: "success",
+          isLoading: false,
           position: 'bottom-center',
           draggable: true,
+          autoClose: 5000
         });
 
         router.push('/entrance?reserved=true');
       } else {
-        alert('エラーが発生しました。再度読み込みます。');
+        toast.update(id, {
+          render: 'エラーが発生しました。在庫数が変わった可能性があるため再読み込みしました。',
+          type: 'error',
+          isLoading: false,
+          position: 'bottom-center',
+          draggable: true,
+          autoClose: 5000
+        })
         router.reload();
       }
     });

@@ -104,6 +104,9 @@ const ShoppingForm = () => {
       });
       return
     }
+    const id = toast.loading("送信中...", {
+      position: 'bottom-center',
+    })
     // api/shoppingにPATCH
     fetch('/api/shopping', {
       method: 'PATCH',
@@ -120,9 +123,14 @@ const ShoppingForm = () => {
     }).then((res) => {
       if (res.status === 200) {
         // 値が問題ないことを完了したことを確認してからToastを表示する
-        toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
+        const text = reserved ? '予約を更新しました' : '予約を受け付けました'
+        toast.update(id, {
+          render: text,
+          type: "success",
+          isLoading: false,
           position: 'bottom-center',
           draggable: true,
+          autoClose: 5000
         });
         if (originalCount || sourCount || misoCount || lacticCount) {
           router.push('/shopping?reserved=true');
@@ -130,7 +138,15 @@ const ShoppingForm = () => {
           router.push('/');
         }
       } else {
-        alert('エラーが発生しました。');
+        toast.update(id, {
+          render: 'エラーが発生しました。在庫数が変わった可能性があるため再読み込みしました。',
+          type: 'error',
+          isLoading: false,
+          position: 'bottom-center',
+          draggable: true,
+          autoClose: 5000
+        })
+        router.reload();
       }
     });
   }
