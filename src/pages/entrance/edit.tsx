@@ -120,7 +120,7 @@ const EntranceEdit = () => {
             お申し込みを取り消されたい場合は、チェックを外して送信してください。
           </p>
         )}
-        <div className="mt-4 sm:col-span-2 sm:mt-0">
+        <div className="text-xl mt-4 sm:col-span-2 sm:mt-0">
 
           {data.userType === 'nokodaisei' ? (
             <div className="flex flex-col space-y-2">

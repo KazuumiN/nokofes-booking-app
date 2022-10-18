@@ -23,12 +23,12 @@ const EntranceView = () => {
   }
   return (
     <div className="w-full p-8 h-screen flex flex-col justify-between">
-      <div>
-        <div className="flex items-center self-start">
-          <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
-          <pre>{' > '}</pre>
-          <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5">ご来場日</h1>
-        </div>
+      <div className="flex items-center self-start">
+        <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+        <pre>{' > '}</pre>
+        <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5">ご来場日</h1>
+      </div>
+      <div className='text-xl'>
         {data.userType === 'nokodaisei' ?
         (
           <ul className="ml-2">
@@ -63,7 +63,7 @@ const EntranceView = () => {
         )}
         {data.userType === 'general' && (
           <>
-            <p className="mt-8 text-base font-medium sm:text-sm">
+            <p className="mt-8 font-medium">
               同伴者数
             </p>
             <p className="mt-4 ml-8 sm:col-span-2 sm:mt-0">
