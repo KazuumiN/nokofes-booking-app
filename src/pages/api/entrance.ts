@@ -4,7 +4,7 @@ import getOrCreateUser from "lib/api/getOrCreateUser"
 import checkUserType from "lib/api/checkUserType"
 
 // 各日の一般の入場者数上限
-const eachLimit = 8
+const eachLimit = 20 // TODO: 本番環境では2800にする
 
 const patchEntrance = async (token: any, data: any) => {
   const { sub } = token;
