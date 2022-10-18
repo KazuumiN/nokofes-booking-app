@@ -31,7 +31,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="text-3xl font-bold font-hina">農工祭予約システム</h1>
+      <h1 className="text-3xl font-bold font-hina mt-4">農工祭予約システム</h1>
       {entranceReserved && (
         <NumberAndQR numberId={numberId} longerId={longerId} />
       )}
