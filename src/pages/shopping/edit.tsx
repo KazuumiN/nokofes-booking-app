@@ -1,9 +1,5 @@
-// TODO: 入場予約が行われてない場合入場予約ページに飛ばす案内と処理
-// TODO: みそにゅうを予約しようとした人が日曜日の入場予約を行っていない場合、入場予約ページに飛ばす。
-// TODO: 在庫がない時はその予約項目を隠す&みそにゅうは人数制限に達した時に隠す&&人数制限の項目は都度隠していく
-
+// TODO: 13日の予約受付がなされていないときはみそにゅうの予約を受け付けないようにする
 import { ProductCard, BeerCard, MisonyuCard } from "../../components/shopping/ProductCard";
-import { shoppingProps, productType } from "../../types"
 import { useEffect, useState, useRef } from "react";
 import useSWR from "swr";
 import { useRouter } from 'next/router';
@@ -29,6 +25,7 @@ const ShoppingForm = () => {
   const { data, error } = useSWR('/api/shopping', fetcher);
   const ref = useRef(0);
   useEffect(() => {
+    // 初期値設定
     if (!ref.current && data) {
       setOriginalCount(data.order.original);
       setSourCount(data.order.sour);
@@ -38,6 +35,21 @@ const ShoppingForm = () => {
       ref.current = 1;
     }
   }, [data]);
+  useEffect(() => {
+    // みそにゅーの予約時に13日の入場予約があるかをチェック
+    if (!data?.order?.thirteenth && (misoCount || lacticCount)) {
+      const toastWithLink = () => <div className="py-8"><Link href="/entrance/edit?reserve=misonyu"><a>みそにゅーの予約には、13日（日）の入場予約が必要です。<br />ここをタップして入場予約ページに移動できます。</a></Link></div>;
+      toast.warn(toastWithLink, {
+        autoClose: false,
+        position: 'bottom-center',
+        draggable: false,
+        onOpen: () => {
+          setMisoCount(0);
+          setLacticCount(0);
+        }
+      });
+    }
+  }, [data?.order?.thirteenth, misoCount, lacticCount]);
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
@@ -47,6 +59,7 @@ const ShoppingForm = () => {
     alert('予約販売には入場予約を行う必要があります。')
     return <p>予約ページに遷移します...</p>;
   }
+
 
   const pricing = 900 * originalCount + 900 * sourCount + 500 * misoCount + 500 * lacticCount;
   const reserved = !!(data.order.original || data.order.sour || data.order.miso || data.order.lactic);
@@ -115,6 +128,10 @@ const ShoppingForm = () => {
   const options = data.times.map((time:any) => (
     { value: time.id, label:time.name, isDisabled: (!time.remaining && data.order.whenToBuy != time.id)}
   ))
+  const noMisonyuTime = options.every((item:any)=> (item.isDisabled))
+
+  const noBeerStock = !(data.stock.original || data.stock.sour)
+  const noMisonyuStock = !(data.stock.miso || data.stock.lactic)
   
   return (
     <div className="flex flex-col">
@@ -130,37 +147,43 @@ const ShoppingForm = () => {
           }
           <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
         </div>
-        <BeerCard
-          counts={[originalCount, sourCount]}
-          setCounts={[setOriginalCount, setSourCount]}
-          buyAmountInitials={[data.order.original, data.order.sour]}
-          images={[Original, Sour]}
-          stocks={[data.stock.original, data.stock.sour]}
-          {...data.shopItems.beerProducts}
-        />
-        <MisonyuCard
-          counts={[misoCount, lacticCount]}
-          setCounts={[setMisoCount, setLacticCount]}
-          buyAmountInitials={[data.order.miso, data.order.lactic]}
-          images={[Miso, Lactic]}
-          stocks={[data.stock.miso, data.stock.lactic]}
-          {...data.shopItems.misonyuProducts}
-        />
-        {buyingMisonyu && (
-          <div className="flex flex-col items-start justify-between p-3">
-            <dt className="text-xl font-semibold text-gray-900">受け取り日時</dt>
-            <p>
-              {'味噌乳酸菌の受け取りは、受付可能な日時が限定されています。'}
-            </p>
-            <Select
-              className="self-end"
-              options={options}
-              defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
-              onChange={(e) => setWhenToBuy(e.value)}
-              isSearchable={false}
+        {!noBeerStock &&
+          <BeerCard
+            counts={[originalCount, sourCount]}
+            setCounts={[setOriginalCount, setSourCount]}
+            buyAmountInitials={[data.order.original, data.order.sour]}
+            images={[Original, Sour]}
+            stocks={[data.stock.original, data.stock.sour]}
+            {...data.shopItems.beerProducts}
+          />
+        }
+        {!noMisonyuTime && !noMisonyuStock &&
+          <>
+            <MisonyuCard
+              counts={[misoCount, lacticCount]}
+              setCounts={[setMisoCount, setLacticCount]}
+              buyAmountInitials={[data.order.miso, data.order.lactic]}
+              images={[Miso, Lactic]}
+              stocks={[data.stock.miso, data.stock.lactic]}
+              {...data.shopItems.misonyuProducts}
             />
-          </div>
-        )}
+            {buyingMisonyu && (
+              <div className="flex flex-col items-start justify-between p-3">
+                <dt className="text-xl font-semibold text-gray-900">受け取り日時</dt>
+                <p>
+                  {'味噌乳酸菌の受け取りは、受付可能な日時が限定されています。'}
+                </p>
+                <Select
+                  className="self-end"
+                  options={options}
+                  defaultValue={data.order.whenToBuy ? options[data.order.whenToBuy-1] : null}
+                  onChange={(e) => setWhenToBuy(e.value)}
+                  isSearchable={false}
+                />
+              </div>
+            )}
+          </>
+        }
         {/* 
         <div className="flex flex-col space-y-4 border-4 border-neutral-500 -m-2 p-2">
           <p className="self-end -mb-2">※日曜日のみ受け取り可能</p>
@@ -183,35 +206,42 @@ const ShoppingForm = () => {
         </div>
          */}
       </div>
-      <section
-        aria-labelledby="summary-heading"
-        className="mt-16 rounded-lg bg-gray-50 px-4 py-6"
-      >
-        <dl className="space-y-4">
-          <div className="flex items-center justify-between">
-            <dt className="text-xl font-semibold text-gray-900">合計金額</dt>
-            <dd className="text-xl font-medium text-gray-900">¥{pricing.toLocaleString()}</dd>
+      {!(noBeerStock && noMisonyuStock) &&
+        <section
+          aria-labelledby="summary-heading"
+          className="mt-16 rounded-lg bg-gray-50 px-4 py-6"
+        >
+          <dl className="space-y-4">
+            <div className="flex items-center justify-between">
+              <dt className="text-xl font-semibold text-gray-900">合計金額</dt>
+              <dd className="text-xl font-medium text-gray-900">¥{pricing.toLocaleString()}</dd>
+            </div>
+          </dl>
+          <div className="mt-6">
+            <button
+              type="button"
+              className="w-full rounded-md border border-transparent bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              onClick={submit}
+            >
+              {reserved ? "予約を更新する" : "予約する"}
+            </button>
           </div>
-        </dl>
-        <div className="mt-6">
-          <button
-            type="button"
-            className="w-full rounded-md border border-transparent bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-            onClick={submit}
-          >
-            {reserved ? "予約を更新する" : "予約する"}
-          </button>
-        </div>
-        <div className="mt-3 text-center text-sm">
-          <button
-            type="button"
-            className="text-lg p-4 text-green-600 hover:text-green-500"
-            onClick={cancel}
-          >
-            戻る
-          </button>
-        </div>
-      </section>
+          <div className="mt-3 text-center text-sm">
+            <button
+              type="button"
+              className="text-lg p-4 text-green-600 hover:text-green-500"
+              onClick={cancel}
+            >
+              キャンセルして戻る
+            </button>
+          </div>
+        </section>
+      }
+      {(noBeerStock && noMisonyuStock) &&
+        <p>
+          現在、在庫がありません。<br />当日のご来場をこころよりお待ちしております。
+        </p>
+      }
     </div>
   )
 }

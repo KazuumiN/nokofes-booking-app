@@ -11,7 +11,7 @@ const stock = {
   lactic: 200,
 }
 // みそにゅーの受け取り日時の制限を定義
-const whenToBuyLimit = 60
+const whenToBuyLimit = 1
 
 const getStock = async (order: any) => {
   const { original, sour, miso, lactic } = order;

@@ -10,7 +10,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const EntranceView = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/entrance', fetcher);
+  const { data, error } = useSWR('/api/entrance', fetcher, { revalidateOnMount: true });
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 

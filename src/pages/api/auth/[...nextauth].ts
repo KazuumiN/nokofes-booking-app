@@ -1,4 +1,5 @@
 
+// TODO: 10/20の12時より前だったらログインを失敗させる（認証メール送信ロジックやLINE検証ロジック部分で日付判定しちゃってもいいかも）。
 import NextAuth from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import Credentials from "next-auth/providers/credentials"
@@ -83,18 +84,6 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: NEXTAUTH_SECRET,
-
-  // 10/20の12時より前だったらログインを失敗させる。
-  // TODO: 以下コードじゃ上手く動いてないのかもしれないので検証（認証メール送信ロジックやLINE検証ロジック部分で日付判定しちゃってもいいかも）。
-  callbacks: {
-    async signIn(user: any, account: any, profile: any) {
-      const now = new Date()
-      if (now < new Date('2021-10-20T12:00:00+09:00')) {
-        return false
-      }
-      return true
-    }
-  }
 }
 
 // @ts-ignore

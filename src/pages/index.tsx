@@ -1,4 +1,4 @@
-// TODO: 申し込みの受付が完了した時、その旨のメッセージを表示する。
+// TODO: 申し込みの受付が終了した時、その旨のメッセージを表示する。
 // TODO: 先に入場予約してねメッセージを表示する。
 import type { NextPage } from "next";
 import Head from "next/head";

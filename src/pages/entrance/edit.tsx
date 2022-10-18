@@ -19,6 +19,8 @@ const EntranceEdit = () => {
   const [accompaniers, setAccompaniers] = useState(null);
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
+  
+  const reserveMisonyu = router.query.reserve === 'misonyu';
 
   const reserved = !!(data.eleventh || data.twelfth || data.thirteenth);
 
@@ -74,6 +76,16 @@ const EntranceEdit = () => {
     }).then((res) => {
       if (res.status === 200) {
         // 値が問題ないことを完了したことを確認してからToastを表示する
+        if (reserveMisonyu && thirteenthData) {
+          toast.success('13日の予約が完了しました。物品予約ページへ戻ります。', {
+            position: 'bottom-center',
+            autoClose: 5000,
+          });
+          setTimeout(() => {
+            router.push('/shopping/edit');
+          }, 1000);
+          return;
+        }
         toast.success(`${reserved ? '予約を更新しました' : '予約を受け付けました'}`, {
           position: 'bottom-center',
           draggable: true,
