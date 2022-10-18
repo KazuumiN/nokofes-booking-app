@@ -5,7 +5,7 @@ export const entranceVisitType = (data: number) => {
     case 2:
       return "スタッフとして来場";
     case 0:
-      return "非来場予定";
+      return "非来場";
     default:
       return "";
   }

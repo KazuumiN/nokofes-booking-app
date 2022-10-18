@@ -130,7 +130,8 @@ const ShoppingForm = () => {
           isLoading: false,
           position: 'bottom-center',
           draggable: true,
-          autoClose: 5000
+          autoClose: 3000,
+          closeOnClick: true,
         });
         if (originalCount || sourCount || misoCount || lacticCount) {
           router.push('/shopping?reserved=true');

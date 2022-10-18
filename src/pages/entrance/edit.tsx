@@ -51,12 +51,22 @@ const EntranceEdit = () => {
     const accompaniersData = data.userType === 'nokodaisei' ? 0 : accompaniers ? accompaniers.value : reserved ? data.accompaniers : 0;
     // 注文をしている人は予約を取り消せない
     if ((data.original || data.sour || data.miso || data.lactic) && !(eleventhData || twelfthData || thirteenthData)) {
-      alert('注文をしている人は予約を取り消せません');
+      const toastWithLink = () => <div className="py-8"><Link href="/shopping/edit"><a>物品を予約されている方は入場を取り消せません。<br />ここをタップして物品予約ページに移動できます。</a></Link></div>;
+      toast.warn(toastWithLink, {
+        autoClose: false,
+        position: 'bottom-center',
+        draggable: false,
+      });
       return;
     }
     // 味噌乳酸菌を注文している人は予約を取り消せない
     if ((data.miso || data.lactic) && !thirteenthData) {
-      alert('味噌乳酸菌を注文している人は13日の予約を取り消せません');
+      const toastWithLink = () => <div className="py-8"><Link href="/shopping/edit"><a>味噌乳酸菌を注文している人は13日の予約を取り消せません<br />ここをタップして物品予約ページに移動できます。</a></Link></div>;
+      toast.warn(toastWithLink, {
+        autoClose: false,
+        position: 'bottom-center',
+        draggable: false,
+      });
       return;
     }
 
@@ -81,7 +91,7 @@ const EntranceEdit = () => {
         if (reserveMisonyu && thirteenthData) {
           toast.update(id, {
             render: '13日の予約が完了しました。物品予約ページへ戻ります。',
-            type: "success",
+            type: "info",
             isLoading: false,
             position: 'bottom-center',
             draggable: true,
@@ -92,15 +102,28 @@ const EntranceEdit = () => {
           }, 1000);
           return;
         }
-        const text = reserved ? '予約を更新しました' : '予約を受け付けました'
-        toast.update(id, {
-          render: text,
-          type: "success",
-          isLoading: false,
-          position: 'bottom-center',
-          draggable: true,
-          autoClose: 5000
-        });
+        if (reserved) {
+          toast.update(id, {
+            render: '予約を更新しました',
+            type: "success",
+            isLoading: false,
+            position: 'bottom-center',
+            draggable: true,
+            autoClose: 3000,
+            closeOnClick: true,
+          });
+        } else {
+          const toastWithLink = () => <div className="py-4"><Link href="/shopping/edit"><a>入場予約を受け付けました<br />ここをタップして物品予約ページに移動できます。</a></Link></div>;
+          toast.update(id, {
+            render: toastWithLink,
+            type: "success",
+            isLoading: false,
+            position: 'bottom-center',
+            draggable: true,
+            autoClose: 5000,
+            closeOnClick: true,
+          });
+        }
 
         router.push('/entrance?reserved=true');
       } else {
@@ -117,7 +140,7 @@ const EntranceEdit = () => {
     });
   }
   return (
-    <div className="w-full px-4">
+    <div className="w-full px-4 h-screen ">
       <div className="flex items-center">
         <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
         <pre>{' > '}</pre>
@@ -261,9 +284,10 @@ const EntranceEdit = () => {
           <label htmlFor="accompaniers" className="text-lg font-medium ">
             同伴者数
           </label>
+          <p className='text-sm'>&nbsp;&nbsp;基本的はお一人お一人でのお申し込みをお願いいたしております。<br />&nbsp;&nbsp;小学生以下のお子様など、スマホを持っておられない同伴者がいらっしゃる場合は同伴者数をご記入ください。</p>
           <Select
             options={accompaniersOptions}
-            defaultValue={reserved ? accompaniersOptions[data.accompaniers] : options[0]}
+            defaultValue={reserved ? accompaniersOptions[data.accompaniers] : accompaniersOptions[0]}
             onChange={(e) => {
               // @ts-ignore
               return setAccompaniers(e)}
@@ -271,23 +295,30 @@ const EntranceEdit = () => {
           />
         </div>
       )}
-      <div className="pt-5">
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            onClick={cancel}
-          >
-            キャンセル
-          </button>
-          <button
-            type="submit"
-            className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            onClick={submit}
-          >
-            {reserved ? '更新' : '予約'}する
-          </button>
-        </div>
+      <div className="pt-5 mt-auto">
+        <section
+          aria-labelledby="summary-heading"
+          className="mt-16 rounded-lg px-4 py-6"
+        >
+          <div className="mt-6">
+            <button
+              type="button"
+              className="w-full rounded-md border border-transparent bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              onClick={submit}
+            >
+              {reserved ? "予約を更新する" : "予約する"}
+            </button>
+          </div>
+          <div className="mt-3 text-center text-sm">
+            <button
+              type="button"
+              className="text-lg p-4 text-green-600 hover:text-green-500"
+              onClick={cancel}
+            >
+              キャンセルして戻る
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   )
