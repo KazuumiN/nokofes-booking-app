@@ -54,15 +54,13 @@ const ShoppingForm = () => {
   useEffect(() => {
     setWarnWhenToBuy(false);
   }, [whenToBuy]);
-
+  
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
-
-  if (!(data.order.eleventh || data.order.twelfth || data.order.thirteenth)) {
+  
+  if  (data && !(data.order.eleventh || data.order.twelfth || data.order.thirteenth)) {
     // 予約していないため/editへ飛ばす。（本来は見えないはずの画面）
     router.push('/entrance/edit');
-    alert('予約販売には入場予約を行う必要があります。')
-    return <p>予約ページに遷移します...</p>;
   }
 
 
@@ -249,6 +247,7 @@ const ShoppingForm = () => {
               type="button"
               className="w-full rounded-md border border-transparent bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               onClick={submit}
+              disabled={(!reserved && (misoCount + lacticCount + originalCount + sourCount) == 0)}
             >
               {reserved ? "予約を更新する" : "予約する"}
             </button>

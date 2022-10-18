@@ -152,10 +152,8 @@ const EntranceEdit = () => {
         }
         <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "来場の予約"}</h1>
       </div>
-      <div className="m-4">
-        <div className="text-lg font-medium">
-          ご来場日
-        </div>
+      <div className="m-4"><h1 className="text-3xl font-bold font-hina text-center my-2">ご来場お申し込み</h1>
+        <h2 className='text-xl my-2'>&nbsp;&nbsp;今年度の学園祭の開催期間は<br/>11月11日〜11月13日の3日間です。</h2>
         {reserved && data.userType === 'general' && (
           <p>
             お申し込みを取り消されたい場合は、チェックを外して送信してください。
@@ -303,8 +301,9 @@ const EntranceEdit = () => {
           <div className="mt-6">
             <button
               type="button"
-              className="w-full rounded-md border border-transparent bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              className="w-full rounded-md border border-transparent disabled:bg-gray-600 bg-green-600 py-3 px-4 text-xl font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               onClick={submit}
+              disabled={(!reserved && !(eleventh || twelfth || thirteenth))}
             >
               {reserved ? "予約を更新する" : "予約する"}
             </button>

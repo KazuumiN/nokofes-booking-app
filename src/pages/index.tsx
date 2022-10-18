@@ -36,26 +36,29 @@ const Home: NextPage = () => {
         <NumberAndQR numberId={numberId} longerId={longerId} />
       )}
 
-      <div className="flex justify-between px-3 space-x-2">
-        <Link href={entranceReserved ? "/entrance" : "/entrance/edit"} >
-          <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
-          >
-            {entranceReserved ? "入場予約\n確認修正" : "入場予約\n申し込み"}
-          </a>
-        </Link>
-        {entranceReserved ? (
-          <Link href={shoppingReserved ? "/shopping" : "/shopping/edit"} >
-          <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
-          >
-            {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
-          </a>
-        </Link>
-        ) : (
-          <p className="bg-gray-500 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
-          >
-            {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
-          </p>
-        )}
+      <div>
+        <div className="flex justify-between px-3 space-x-2">
+          <Link href={entranceReserved ? "/entrance" : "/entrance/edit"} >
+            <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
+            >
+              {entranceReserved ? "入場予約\n確認修正" : "入場予約\n申し込み"}
+            </a>
+          </Link>
+          {entranceReserved ? (
+            <Link href={shoppingReserved ? "/shopping" : "/shopping/edit"} >
+            <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
+            >
+              {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
+            </a>
+          </Link>
+          ) : (
+            <p className="bg-gray-500 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
+            >
+              {shoppingReserved ? "販売予約\n確認修正" : "販売予約\n申し込み"}
+            </p>
+          )}
+        </div>
+        <p className="text-left ml-3 mt-3 text-2xl">まずは<br/><span className="font-black">入場予約</span>を行ってください！</p>
       </div>
     </div>
   );
