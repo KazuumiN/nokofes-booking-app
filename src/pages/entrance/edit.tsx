@@ -101,11 +101,11 @@ const EntranceEdit = () => {
   return (
     <div className="w-full px-4">
       <div className="flex items-center">
-        <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+        <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
         <pre>{' > '}</pre>
         {reserved &&
           <>
-            <Link href="/entrance"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">来場確認</h1></a></Link>
+            <Link href="/entrance"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">来場確認</h1></a></Link>
             <pre>{' > '}</pre>
           </>
         }

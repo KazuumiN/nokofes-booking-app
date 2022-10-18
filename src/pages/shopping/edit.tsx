@@ -10,7 +10,7 @@ import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
 import { toast } from "react-toastify";
 import Link from "next/link";
-
+import clsx from "clsx";
 
 // @ts-ignore
 const fetcher = (...args) => fetch(...args).then(res => res.json())
@@ -22,6 +22,7 @@ const ShoppingForm = () => {
   const [misoCount, setMisoCount] = useState(0);
   const [lacticCount, setLacticCount] = useState(0);
   const [whenToBuy, setWhenToBuy] = useState(0);
+  const [warnWhenToBuy, setWarnWhenToBuy] = useState(false);
   const { data, error } = useSWR('/api/shopping', fetcher);
   const ref = useRef(0);
   useEffect(() => {
@@ -50,6 +51,10 @@ const ShoppingForm = () => {
       });
     }
   }, [data?.order?.thirteenth, misoCount, lacticCount]);
+  useEffect(() => {
+    setWarnWhenToBuy(false);
+  }, [whenToBuy]);
+
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
@@ -91,7 +96,12 @@ const ShoppingForm = () => {
       }
     }
     if (buyingMisonyu && !whenToBuyData) {
-      alert('受け取り日時を選択してください');
+      setWarnWhenToBuy(true);
+      toast.warn('受け取り日時を選択してください', {
+        position: 'bottom-center',
+        draggable: false,
+        autoClose: 3000,
+      });
       return
     }
     // api/shoppingにPATCH
@@ -137,11 +147,11 @@ const ShoppingForm = () => {
     <div className="flex flex-col">
       <div className="flex flex-col space-y-4 px-2">
         <div className="flex items-center">
-          <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+          <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
           <pre>{' > '}</pre>
           {reserved &&
             <>
-              <Link href="/shopping"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">予約一覧</h1></a></Link>
+              <Link href="/shopping"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">予約一覧</h1></a></Link>
               <pre>{' > '}</pre>
             </>
           }
@@ -168,7 +178,7 @@ const ShoppingForm = () => {
               {...data.shopItems.misonyuProducts}
             />
             {buyingMisonyu && (
-              <div className="flex flex-col items-start justify-between p-3">
+              <div className={clsx("flex flex-col items-start justify-between p-3", warnWhenToBuy && 'border-red-400 border-4 rounded-md')}>
                 <dt className="text-xl font-semibold text-gray-900">受け取り日時</dt>
                 <p>
                   {'味噌乳酸菌の受け取りは、受付可能な日時が限定されています。'}

@@ -18,7 +18,7 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
             return (
               <div key={item.name}>
               <div className="flex justify-between p-1">
-                <div className="flex space-x-2">
+                <div className="flex space-x-1">
                   <div className='m-2'>
                     <Image src={images[index]} alt={item.name} className="" width={81} height={108} />
                   </div>

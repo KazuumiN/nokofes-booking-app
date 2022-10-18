@@ -53,7 +53,7 @@ const Layout: NextPage<{ children: ReactNode }> = ({
   }
   return (
     <>
-      <main className="flex flex-col justify-end items-center pt-auto max-w-sm mx-auto p-1 text-gray-900 sm:text-gray-700">
+      <main className="flex flex-col justify-end items-center pt-auto max-w-sm mx-auto text-gray-900 sm:text-gray-700">
         {children}
       </main>
     </>

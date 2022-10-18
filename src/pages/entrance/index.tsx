@@ -25,7 +25,7 @@ const EntranceView = () => {
     <div className="w-full p-8 h-screen flex flex-col justify-between">
       <div>
         <div className="flex items-center self-start">
-          <Link href="/"><a><h1 className="text-xl font-bold hover:border-b-2 border-black px-0.5 pb-0.5">トップ</h1></a></Link>
+          <Link href="/"><a><h1 className="text-xl font-bold border-b-2 border-transparent hover:border-black px-0.5 pb-0.5">トップ</h1></a></Link>
           <pre>{' > '}</pre>
           <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5">ご来場日</h1>
         </div>

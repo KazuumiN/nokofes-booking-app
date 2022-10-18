@@ -36,7 +36,7 @@ const Home: NextPage = () => {
         <NumberAndQR numberId={numberId} longerId={longerId} />
       )}
 
-      <div className="flex justify-between px-3">
+      <div className="flex justify-between px-3 space-x-2">
         <Link href={entranceReserved ? "/entrance" : "/entrance/edit"} >
           <a className="bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
           >
