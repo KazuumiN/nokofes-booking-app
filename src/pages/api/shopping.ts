@@ -141,6 +141,11 @@ const patchShopping = async (token: any, data: any) => {
   if (!(miso || lactic) && whenToBuy !== 0) {
     whenToBuy=0
   }
+
+  // 各商品は10までしか購入できない
+  if (original > 10 || sour > 10 || miso > 10 || lactic > 10) {
+    throw new Error("trying to buy too much")
+  }
   
   // トランザクション処理
   return await client.$transaction(async (tx) => {
