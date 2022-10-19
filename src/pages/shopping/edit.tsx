@@ -175,7 +175,7 @@ const ShoppingForm = () => {
           stocks={[data.stock.original, data.stock.sour]}
           {...data.shopItems.beerProducts}
         />
-        {!noMisonyuTime && !noMisonyuStock &&
+        {!noMisonyuTime ?
           <>
             <MisonyuCard
               counts={[misoCount, lacticCount]}
@@ -201,6 +201,15 @@ const ShoppingForm = () => {
               </div>
             )}
           </>
+          :
+          <MisonyuCard
+            counts={[misoCount, lacticCount]}
+            setCounts={[setMisoCount, setLacticCount]}
+            buyAmountInitials={[data.order.miso, data.order.lactic]}
+            images={[Miso, Lactic]}
+            stocks={[0, 0]}
+            {...data.shopItems.misonyuProducts}
+          />
         }
         {/* 
         <div className="flex flex-col space-y-4 border-4 border-neutral-500 -m-2 p-2">
