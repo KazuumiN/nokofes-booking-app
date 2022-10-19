@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, ...props}: any) => {
   return (
-    <section className='flex flex-col items-end space-y-4'>
+    <section className='flex flex-col'>
       {/* <OldPriceCard price={props.price} /> */}
       <div className="rounded-md flex flex-col py-1 space-y-1">
         <div className="flex flex-col justify-between p-2 px-3 bg-[#024F27] text-white">
@@ -45,6 +45,12 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
           )})}
         </div>
       </div>
+      {(stocks[0] && stocks[1]) && 
+        <div className="text-xs ml-5 text-indigo-900 mb-4">
+          ”在庫なし”の場合は、学祭以降の販売もありますので、<br />
+          <a href="https://nokodaicraft.hp.peraichi.com/" target="_blank" rel="noopener noreferrer" className="underline text-sm font-bold">公式HP</a> も併せてご確認ください。
+        </div>
+      }
     </section>
   )
 }
@@ -58,7 +64,7 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
           <h3 className="text-3xl font-hina mb-1">{props.name}</h3>
           <p className="text-xs  whitespace-pre-wrap">{props.description}</p>
         </div>
-        <p className='text-left'>※日曜日のみ受け取り可能</p>
+        <p className='text-left ml-1'>※日曜日のみ受け取り可能</p>
         <div className="flex flex-col space-y-2">
           {props.items.map((item: any, index: number) => {
             const isLast = props.items.length - 1 === index;

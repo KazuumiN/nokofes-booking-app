@@ -167,16 +167,14 @@ const ShoppingForm = () => {
           }
           <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
         </div>
-        {!noBeerStock &&
-          <BeerCard
-            counts={[originalCount, sourCount]}
-            setCounts={[setOriginalCount, setSourCount]}
-            buyAmountInitials={[data.order.original, data.order.sour]}
-            images={[Original, Sour]}
-            stocks={[data.stock.original, data.stock.sour]}
-            {...data.shopItems.beerProducts}
-          />
-        }
+        <BeerCard
+          counts={[originalCount, sourCount]}
+          setCounts={[setOriginalCount, setSourCount]}
+          buyAmountInitials={[data.order.original, data.order.sour]}
+          images={[Original, Sour]}
+          stocks={[data.stock.original, data.stock.sour]}
+          {...data.shopItems.beerProducts}
+        />
         {!noMisonyuTime && !noMisonyuStock &&
           <>
             <MisonyuCard
@@ -229,7 +227,7 @@ const ShoppingForm = () => {
       {!(noBeerStock && noMisonyuStock) &&
         <section
           aria-labelledby="summary-heading"
-          className="mt-16 rounded-lg bg-gray-50 px-4 py-6"
+          className="mt-8 rounded-lg bg-gray-50 px-4 py-6"
         >
           <dl className="space-y-4">
             <div className="flex items-center justify-between">
