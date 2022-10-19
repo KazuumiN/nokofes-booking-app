@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import Timer from "components/Timer";
+import dynamic from 'next/dynamic';
+const Timer = dynamic(() => import("components/Timer"),{ssr:false})
 import SignIn from "components/Signin";
 import LiffContext from "store/LiffContext";
 import { useRouter } from "next/router";
