@@ -1,14 +1,14 @@
 import QR from "./QR"
 
-const NumberAndQR = ({id}: {id: string}) => {
+const NumberAndQR = ({numberId, longerId}: {numberId: string, longerId: string}) => {
   return (
     <>
-      <p className="text-4xl font-bold">
-        <span className="underline">{id.slice(0,4)}</span>
+      <p className="text-6xl font-bold">
+        <span className="underline">{numberId.slice(0,4)}</span>
         <span> </span>
-        <span className="underline">{id.slice(4)}</span>
+        <span className="underline">{numberId.slice(4)}</span>
       </p>
-      <QR id={id} />
+      <QR id={longerId} />
     </>
   )
 }

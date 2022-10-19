@@ -2,8 +2,7 @@ import { useTimer } from 'react-timer-hook';
 import Image from 'next/image';
 import HakkenKokenImage from 'assets/HakkenKoken.jpg';
 //{ expiryTimestamp }: { expiryTimestamp: Date }
-const Timer = () => {
-  const expiryTimestamp = new Date("2022-10-20T12:00:00+0900");
+const Timer = ({expiryTimestamp}:any) => {
 
   const {
     seconds,

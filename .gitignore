@@ -25,6 +25,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# 無視しない方がいいのかも...？
+.env
+
 # local env files
 .env*.local
 

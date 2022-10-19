@@ -1,0 +1,80 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Attendee {
+  // 基本データ
+  id     String @id
+  numberId String @unique
+  longerId String @default(cuid())
+  email String?
+  // 作成日時、更新日時
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  // entrance用↓
+  eleventh Int @default(0)
+  twelfth Int @default(0)
+  thirteenth Int @default(0)
+  accompaniers Int @default(0)
+  numberOnEleventh Int @default(0)
+  numberOnTwelfth Int @default(0)
+  numberOnThirteenth Int @default(0)
+  // shopping用↓
+  original Int @default(0)
+  sour Int @default(0)
+  miso Int @default(0)
+  lactic Int @default(0)
+  whenToBuy Int @default(0)
+}

@@ -5,7 +5,13 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        hina: ["Hina Mincho", "serif"],
+        zenkaku: ['Zen Kaku Gothic New', "sans-serif"],
+        noto: ['Noto Sans JP', 'sans-serif'],
+      }
+    },
   },
   plugins: [],
 }
