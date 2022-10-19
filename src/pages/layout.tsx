@@ -12,6 +12,7 @@ const Layout: NextPage<{ children: ReactNode }> = ({
   const { data: session, status } = useSession()
   const liff = useContext(LiffContext);
   const router = useRouter()
+  console.log('開発に興味があれば、何かご一緒できると嬉しいので西村(Twitter: @Kazuumi_N)にDMください！')
   if (status === "loading") {
     return <div className=" text-center">読み込み中...</div>
   }
