@@ -55,7 +55,9 @@ const Home: NextPage = () => {
             </p>
           )}
         </div>
-        <p className="text-left ml-3 mt-3 text-2xl">まずは<br/><span className="font-black">入場予約</span>を行ってください！</p>
+        {!entranceReserved && (
+          <p className="text-left ml-3 mt-3 text-2xl">まずは<br/><span className="font-black">入場予約</span>を行ってください！</p>
+        )}
       </div>
     </div>
   );
