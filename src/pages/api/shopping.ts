@@ -12,7 +12,7 @@ const stock = {
   lactic: 200,
 }
 // みそにゅーの受け取り日時の制限を定義
-const whenToBuyLimit = 5 // TODO: 本番は60人
+const whenToBuyLimit = 60
 
 const getStock = async (order: any) => {
   const { original, sour, miso, lactic } = order;
@@ -142,7 +142,7 @@ const patchShopping = async (token: any, data: any) => {
     whenToBuy=0
   }
 
-  // TODO: ビールは、みそにゅーは5ずつまでしか購入できない
+  // ビールは10ずつ、みそにゅーは5ずつまでしか購入できない
   if (original > 10 || sour > 10 || miso > 5 || lactic > 5) {
     throw new Error("trying to buy too much")
   }

@@ -1,5 +1,6 @@
 import { NextPage } from "next";
-import type { Liff } from "@line/liff";
+import Head from "next/head";
+import Timer from "components/Timer";
 import SignIn from "components/Signin";
 import LiffContext from "store/LiffContext";
 import { useRouter } from "next/router";
@@ -9,10 +10,19 @@ import { useSession, signIn, signOut } from "next-auth/react"
 const Layout: NextPage<{ children: ReactNode }> = ({
   children
 }) => {
+  
   const { data: session, status } = useSession()
   const liff = useContext(LiffContext);
   const router = useRouter()
-  console.log('開発に興味があれば、何かご一緒できると嬉しいので西村(Twitter: @Kazuumi_N)にDMください！')
+  useEffect(() => {
+    console.log('開発に興味があれば、何かご一緒できると嬉しいので西村(Twitter: @Kazuumi_N)にDMください！')
+
+  }, [])
+  const expiryTimestamp = new Date("2022-10-20T12:00:00+0900")
+  if (expiryTimestamp > new Date()) {
+    // 予約開始前はタイマーを表示する早期リターン
+    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer expiryTimestamp={expiryTimestamp} /></>
+  }
   if (status === "loading") {
     return <div className=" text-center">読み込み中...</div>
   }
@@ -54,6 +64,11 @@ const Layout: NextPage<{ children: ReactNode }> = ({
   }
   return (
     <>
+      <Head>
+        <title>農工祭予約システム</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main className="flex flex-col justify-end items-center pt-auto max-w-sm mx-auto text-gray-900 sm:text-gray-700">
         {children}
       </main>

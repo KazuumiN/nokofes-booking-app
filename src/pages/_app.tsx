@@ -7,8 +7,6 @@ import { SessionProvider } from 'next-auth/react';
 import { Session } from 'next-auth'
 import Layout from "./layout";
 import LiffContext from "store/LiffContext";
-import Head from "next/head";
-import Timer from "components/Timer";
 import { SWRConfig } from 'swr'
 import { ToastContainer } from 'react-toastify'
 import Router from 'next/router';
@@ -39,13 +37,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
       });
   }, []);
   
-  // TODO: 最終的にこれを反映する
-  // const expiryTimestamp = new Date("2022-10-20T12:00:00+0900")
-  const expiryTimestamp = new Date("2022-10-18T12:41:30+0900")
-  if (expiryTimestamp > new Date()) {
-    // 予約開始前はタイマーを表示する早期リターン
-    return <><Head><title>予約開始までお待ちください！</title><link rel="icon" href="/favicon.ico" /></Head><Timer expiryTimestamp={expiryTimestamp} /></>
-  }
+
   return (
     <SessionProvider session={pageProps.session}>
       <LiffContext.Provider value={liffObject}>
