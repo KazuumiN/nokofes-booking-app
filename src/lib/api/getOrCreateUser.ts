@@ -13,8 +13,11 @@ const getOrCreateUser = async (token: any) => {
     // ユーザーを作成するために、ユニークな数字8桁の文字列を生成
     let tempNumberId = "00000000"
     while (true) {
-      // 該当のnumberIdを持たないかチェック
+      // tempNumberIdをランダムに生成
       tempNumberId = Math.floor(Math.random() * 100000000).toString()
+      // 8桁になるように1を左詰め
+      tempNumberId = tempNumberId.padStart(8, "1")
+      // 該当のnumberIdを持たないかチェック
       const checkUser = await client.attendee.findUnique({
         where: {
           numberId: tempNumberId
