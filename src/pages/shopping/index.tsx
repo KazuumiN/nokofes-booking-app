@@ -9,6 +9,23 @@ import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
 import Lactic from 'assets/lactic.jpg';
 
+const convertWhenToBuy = (whenToBuy: number) => {
+  switch (whenToBuy) {
+    case 0:
+      return '';
+    case 1:
+      return "11/13 10:00~12:00"
+    case 2:
+      return "11/13 12:00~14:00"
+    case 3:
+      return "11/13 14:00~16:00"
+    
+    default:
+      return '';
+  }
+}
+
+
 const ShoppingView = () => {
   const router = useRouter();
   const { data, error } = useSWR('/api', { revalidateOnMount: true });
@@ -44,9 +61,13 @@ const ShoppingView = () => {
         <ProductPreviewCard image={Lactic} order={data.lactic} {...shopItems.misonyuProducts.items[1]} />
       }
       <div className="w-full bg-neutral-200 p-3">
+        <div className="flex justify-between mb-4 items-center">
+          <p>受け取り日時</p>
+          <p className="font-bold text-lg">{convertWhenToBuy(data.whenToBuy)}</p>
+        </div>
         <div className="flex items-center justify-between">
           <dt className="text-xl font-semibold text-gray-900">合計金額</dt>
-          <dd className="text-xl font-medium text-gray-900">¥{pricing.toLocaleString()}</dd>
+          <dd className="text-xl font-bold text-gray-900">¥{pricing.toLocaleString()}</dd>
         </div>
       </div>
       <Link href="/shopping/edit">
