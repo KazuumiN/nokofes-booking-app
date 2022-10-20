@@ -100,10 +100,10 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
         </div>
       </div>
       {!(stocks[0] && stocks[1]) && 
-        <div className="text-xs mx-2  text-indigo-900 mb-4">
-          学園祭期間中の味噌・乳酸菌飲料の予約受付は終了しました。<br />
-          学園祭期間外は農工大夢市場でも販売していますので、<br/>是非お越しください。<br/>
-          <a href="https://web.tuat.ac.jp/~fscenter/yumeichiba.html" target="_blank" rel="noopener noreferrer" className="underline text-sm font-bold">詳しくはこちら</a>
+        <div className="text-md mx-2  text-indigo-900 mb-4">
+          &nbsp;&nbsp;学園祭期間中の味噌・乳酸菌飲料の予約受付は終了しました。<br />
+          &nbsp;&nbsp;学園祭期間外は農工大夢市場でも販売していますので、<br/>是非お越しください。<br/>
+          <a href="https://web.tuat.ac.jp/~fscenter/yumeichiba.html" target="_blank" rel="noopener noreferrer" className="underline font-bold">詳しくはこちら</a>
         </div>
       }
     </section>

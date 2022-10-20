@@ -170,6 +170,11 @@ const ShoppingForm = () => {
           }
           <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5 mr-auto">{reserved ? "予約の修正" : "商品の予約"}</h1>
         </div>
+        {(noBeerStock && noMisonyuStock) &&
+          <p>
+            現在、在庫がありません。<br />当日のご来場をこころよりお待ちしております。
+          </p>
+        }
         <BeerCard
           counts={[originalCount, sourCount]}
           setCounts={[setOriginalCount, setSourCount]}
@@ -247,11 +252,16 @@ const ShoppingForm = () => {
           </div>
         </section>
       }
-      {(noBeerStock && noMisonyuStock) &&
-        <p>
-          現在、在庫がありません。<br />当日のご来場をこころよりお待ちしております。
-        </p>
-      }
+
+      <div className="mt-3 text-center text-sm">
+        <button
+          type="button"
+          className="text-lg p-4 text-gray-600 hover:text-gray-500"
+          onClick={cancel}
+        >
+          戻る
+        </button>
+      </div>
     </div>
   )
 }
