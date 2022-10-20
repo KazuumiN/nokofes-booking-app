@@ -3,6 +3,7 @@ import { ProductPreviewCard } from "components/shopping/ProductCard"
 import useSWR from "swr";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import getShopItems from "lib/getShopItems";
 import Original from 'assets/original.jpg';
 import Sour from 'assets/sour.jpg';
 import Miso from 'assets/miso.jpg';
@@ -10,17 +11,18 @@ import Lactic from 'assets/lactic.jpg';
 
 const ShoppingView = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/shopping', { revalidateOnMount: true });
+  const { data, error } = useSWR('/api', { revalidateOnMount: true });
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
 
   const reserved = router.query.reserved;
-  const pricing = 900 * data.order.original + 900 * data.order.sour + 500 * data.order.miso + 500 * data.order.lactic;
+  const pricing = 900 * data.original + 900 * data.sour + 500 * data.miso + 500 * data.lactic;
   if (!pricing && !reserved) {
     // 料金=0なら予約していないため/editへ飛ばす
     router.push('/shopping/edit');
     return <p>予約ページに遷移します</p>
   }
+  const shopItems = getShopItems()
 
   return (
     <div className="flex flex-col items-center space-y-4">
@@ -29,17 +31,17 @@ const ShoppingView = () => {
         <pre>{' > '}</pre>
         <h1 className="text-xl font-bold border-b-2 border-black px-0.5 pb-0.5">予約一覧</h1>
       </div>
-      {!!data.order.original && 
-        <ProductPreviewCard image={Original} order={data.order.original} {...data.shopItems.beerProducts.items[0]} />
+      {!!data.original && 
+        <ProductPreviewCard image={Original} order={data.original} {...shopItems.beerProducts.items[0]} />
       }
-      {!!data.order.sour &&
-        <ProductPreviewCard image={Sour} order={data.order.sour} {...data.shopItems.beerProducts.items[1]} />
+      {!!data.sour &&
+        <ProductPreviewCard image={Sour} order={data.sour} {...shopItems.beerProducts.items[1]} />
       }
-      {!!data.order.miso &&
-        <ProductPreviewCard image={Miso} order={data.order.miso} {...data.shopItems.misonyuProducts.items[0]} />
+      {!!data.miso &&
+        <ProductPreviewCard image={Miso} order={data.miso} {...shopItems.misonyuProducts.items[0]} />
       }
-      {!!data.order.lactic &&
-        <ProductPreviewCard image={Lactic} order={data.order.lactic} {...data.shopItems.misonyuProducts.items[1]} />
+      {!!data.lactic &&
+        <ProductPreviewCard image={Lactic} order={data.lactic} {...shopItems.misonyuProducts.items[1]} />
       }
       <div className="w-full bg-neutral-200 p-3">
         <div className="flex items-center justify-between">

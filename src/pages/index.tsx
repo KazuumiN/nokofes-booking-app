@@ -10,21 +10,15 @@ const Home: NextPage = () => {
   const { data, error } = useSWR('/api');
   if (error) return <p>Error: {error.message}<br/>お手数ですが、この画面をスクリーショットしてLINEまたはメールいただけるとスタッフが手動で対応いたします。</p>;
   if (!data) return <p>データを取得中...</p>;
-
-  const {
-    numberId,
-    longerId,
-    userType,
-    entranceReserved,
-    shoppingReserved,
-  } = data
+  const entranceReserved = !!(data.eleventh || data.twelfth || data.thirteenth)
+  const shoppingReserved = !!(data.original || data.sour || data.miso || data.lactic)
 
   // 予約開始後
   return (
     <div className="flex flex-col justify-around h-screen text-center">
       <h1 className="text-3xl font-bold font-hina mt-4">農工祭予約システム</h1>
       {entranceReserved && (
-        <NumberAndQR numberId={numberId} longerId={longerId} />
+        <NumberAndQR numberId={data.numberId} longerId={data.longerId} />
       )}
 
       <div>

@@ -62,17 +62,6 @@ const patchEntrance = async (token: any, data: any) => {
         id: sub
       },
     })
-    const users = await tx.attendee.aggregate({
-      _sum: {
-        numberOnEleventh: true,
-        numberOnTwelfth: true,
-        numberOnThirteenth: true,
-      }
-    })
-
-    if ((users._sum.numberOnEleventh || 0) > eachLimit || (users._sum.numberOnTwelfth || 0) > eachLimit || (users._sum.numberOnThirteenth || 0) > eachLimit) {
-      throw new Error('上限を超えています')
-    }
     // 注文をしている人は予約を取り消せない
     if ((user.original || user.sour || user.miso || user.lactic) && !(eleventh || twelfth || thirteenth)) {
       throw new Error ('物販予約済みなのに入場予約しないのはまずい（おそらくローカルで処理するはずのエラー）')
@@ -80,6 +69,17 @@ const patchEntrance = async (token: any, data: any) => {
     // 味噌乳酸菌を注文している人は日曜日を取り消せない
     if ((user.miso || user.lactic) && thirteenth === 0) {
       throw new Error ('味噌乳酸菌を注文しているのに日曜日を取り消すのはまずい（おそらくローカルで処理するはずのエラー）')
+    }
+    
+    const users = await tx.attendee.aggregate({
+      _sum: {
+        numberOnEleventh: true,
+        numberOnTwelfth: true,
+        numberOnThirteenth: true,
+      }
+    })
+    if ((users._sum.numberOnEleventh || 0) > eachLimit || (users._sum.numberOnTwelfth || 0) > eachLimit || (users._sum.numberOnThirteenth || 0) > eachLimit) {
+      throw new Error('上限を超えています')
     }
     return user
   })

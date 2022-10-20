@@ -36,13 +36,14 @@ const indexApi = async (req: NextApiRequest, res: NextApiResponse) => {
 const getId = async (token: any) => {
     // ユーザーを取得。無ければ作って取得
   const user = await getOrCreateUser(token)
-  return {
-    numberId: user.numberId,
-    longerId: user.longerId,
-    userType: user.userType,
-    entranceReserved: !!(user.eleventh || user.twelfth || user.thirteenth),
-    shoppingReserved: !!(user.original || user.sour || user.miso || user.lactic)
-  }
+  return user
+  // return {
+  //   numberId: user.numberId,
+  //   longerId: user.longerId,
+  //   userType: user.userType,
+  //   entranceReserved: !!(user.eleventh || user.twelfth || user.thirteenth),
+  //   shoppingReserved: !!(user.original || user.sour || user.miso || user.lactic)
+  // }
 }
 
 export default indexApi

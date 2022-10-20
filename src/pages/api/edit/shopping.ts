@@ -209,9 +209,8 @@ const shoppingApi = async (req: NextApiRequest, res: NextApiResponse) => {
         // Signed in
         const order = await getOrCreateUser(token)
         const stock = await getStock(order)
-        const shopItems = getShopItems()
         const times = await getTimes()
-        const data = { order, stock, shopItems, times }
+        const data = { order, stock, times }
         res.status(200).json(data)
       } else {
         // Not Signed in

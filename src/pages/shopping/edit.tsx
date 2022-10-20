@@ -10,6 +10,7 @@ import Lactic from 'assets/lactic.jpg';
 import { toast } from "react-toastify";
 import Link from "next/link";
 import clsx from "clsx";
+import getShopItems from "lib/getShopItems";
 
 const ShoppingForm = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const ShoppingForm = () => {
   const [lacticCount, setLacticCount] = useState(0);
   const [whenToBuy, setWhenToBuy] = useState(0);
   const [warnWhenToBuy, setWarnWhenToBuy] = useState(false);
-  const { data, error } = useSWR('/api/shopping');
+  const { data, error } = useSWR('/api/edit/shopping');
   const ref = useRef(0);
   useEffect(() => {
     // 初期値設定
@@ -58,6 +59,8 @@ const ShoppingForm = () => {
     // 予約していないため/editへ飛ばす。（本来は見えないはずの画面）
     router.push('/entrance/edit');
   }
+
+  const shopItems = getShopItems()
 
 
   const pricing = 900 * originalCount + 900 * sourCount + 500 * misoCount + 500 * lacticCount;
@@ -100,8 +103,8 @@ const ShoppingForm = () => {
     const id = toast.loading("送信中...", {
       position: 'bottom-center',
     })
-    // api/shoppingにPATCH
-    fetch('/api/shopping', {
+    // api/edit/shoppingにPATCH
+    fetch('/api/edit/shopping', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -173,7 +176,7 @@ const ShoppingForm = () => {
           buyAmountInitials={[data.order.original, data.order.sour]}
           images={[Original, Sour]}
           stocks={[data.stock.original, data.stock.sour]}
-          {...data.shopItems.beerProducts}
+          {...shopItems.beerProducts}
         />
         {!noMisonyuTime ?
           <>
@@ -183,7 +186,7 @@ const ShoppingForm = () => {
               buyAmountInitials={[data.order.miso, data.order.lactic]}
               images={[Miso, Lactic]}
               stocks={[data.stock.miso, data.stock.lactic]}
-              {...data.shopItems.misonyuProducts}
+              {...shopItems.misonyuProducts}
             />
             {buyingMisonyu && (
               <div className={clsx("flex flex-col items-start justify-between p-3", warnWhenToBuy && 'border-red-400 border-4 rounded-md')}>
@@ -208,30 +211,9 @@ const ShoppingForm = () => {
             buyAmountInitials={[data.order.miso, data.order.lactic]}
             images={[Miso, Lactic]}
             stocks={[0, 0]}
-            {...data.shopItems.misonyuProducts}
+            {...shopItems.misonyuProducts}
           />
         }
-        {/* 
-        <div className="flex flex-col space-y-4 border-4 border-neutral-500 -m-2 p-2">
-          <p className="self-end -mb-2">※日曜日のみ受け取り可能</p>
-          <ProductCard
-            counts={[misoCount]}
-            setCounts={[setMisoCount]}
-            buyAmountInitials={[data.order.miso]}
-            image={Miso}
-            stocks={[data.stock.miso]}
-            {...data.shopItems.misoProduct}
-          />
-          <ProductCard
-            counts={[lacticCount]}
-            setCounts={[setLacticCount]}
-            buyAmountInitials={[data.order.lactic]}
-            image={Lactic}
-            stocks={[data.stock.lactic]}
-            {...data.shopItems.lacticProduct}
-          />
-        </div>
-         */}
       </div>
       {!(noBeerStock && noMisonyuStock) &&
         <section

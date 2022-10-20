@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 const EntranceEdit = () => {
   const router = useRouter();
-  const { data, error } = useSWR('/api/entrance');
+  const { data, error } = useSWR('/api/edit/entrance');
   const [eleventh, setEleventh] = useState(null);
   const [twelfth, setTwelfth] = useState(null);
   const [thirteenth, setThirteenth] = useState(null);
@@ -75,8 +75,8 @@ const EntranceEdit = () => {
     const id = toast.loading("送信中...", {
       position: 'bottom-center',
     })
-    // api/entranceにPATCH
-    fetch('/api/entrance', {
+    // api/edit/entranceにPATCH
+    fetch('/api/edit/entrance', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
