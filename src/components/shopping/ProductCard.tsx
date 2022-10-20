@@ -48,7 +48,7 @@ export const BeerCard = ({counts, setCounts, images, buyAmountInitials, stocks, 
       {!(stocks[0] && stocks[1]) && 
         <div className="text-xs ml-5 text-indigo-900 mb-4">
           ”在庫なし”の場合は、学祭以降の販売もありますので、<br />
-          <a href="https://nokodaicraft.hp.peraichi.com/" target="_blank" rel="noopener noreferrer" className="underline text-sm font-bold">公式HP</a> も併せてご確認ください。
+          <a href="https://tuatbeer.hp.peraichi.com/" target="_blank" rel="noopener noreferrer" className="underline text-sm font-bold">公式HP</a> も併せてご確認ください。
         </div>
       }
     </section>
