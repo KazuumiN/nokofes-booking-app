@@ -99,7 +99,7 @@ export const MisonyuCard = ({counts, setCounts, images, buyAmountInitials, stock
           )})}
         </div>
       </div>
-      {(stocks[0] && stocks[1]) && 
+      {!(stocks[0] && stocks[1]) && 
         <div className="text-xs mx-2  text-indigo-900 mb-4">
           学園祭期間中の味噌・乳酸菌飲料の予約受付は終了しました。<br />
           学園祭期間外は農工大夢市場でも販売していますので、<br/>是非お越しください。<br/>
