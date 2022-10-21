@@ -5,11 +5,19 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const { body, method } = req;
   switch (method) {
     case 'POST':
+      // TODO: temp_data
+      res.status(200).json({
+        eleventh: 1,
+        twelfth: 1,
+        thirteenth: 1,
+        accompaniers: 1
+      })
+      
       // まずはユーザーデータを返す
-      const userInfo = await getInfo(body)
-      res.status(200).json(userInfo)
+      // const userInfo = await getInfo(body)
+      // res.status(200).json(userInfo)
       // GASに保存
-      await postGas(body)
+      // await postGas(body)
       return
     default:
       res.status(405).end()
