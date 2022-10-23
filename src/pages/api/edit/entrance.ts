@@ -78,7 +78,7 @@ const patchEntrance = async (token: any, data: any) => {
         numberOnThirteenth: true,
       }
     })
-    if ((eachLimit-1 <= (users._sum.numberOnEleventh || 0)) && ((users._sum.numberOnEleventh || 0) <= eachLimit+5)) {
+    if ((eachLimit-10 <= (users._sum.numberOnEleventh || 0)) && ((users._sum.numberOnEleventh || 0) <= eachLimit-5)) {
       await fetch('https://notify-api.line.me/api/notify', {
         method: 'POST',
         headers: {
@@ -88,26 +88,26 @@ const patchEntrance = async (token: any, data: any) => {
         body: `message=現在${(users._sum.numberOnEleventh || 0)}人が11日の入場を予約しました"}"`,
       });
     }
-    if ((eachLimit-1 <= (users._sum.numberOnTwelfth || 0)) && ((users._sum.numberOnTwelfth || 0) <= eachLimit+5)) {
-      await fetch('https://notify-api.line.me/api/notify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${process.env.LINE_NOTIFY_TOKEN}`,
-        },
-        body: `message=現在${(users._sum.numberOnTwelfth || 0)}人が12日の入場を予約しました"}"`,
-      });
-    }
-    if ((eachLimit-1 <= (users._sum.numberOnThirteenth || 0)) && ((users._sum.numberOnThirteenth || 0) <= eachLimit+5)) {
-      await fetch('https://notify-api.line.me/api/notify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${process.env.LINE_NOTIFY_TOKEN}`,
-        },
-        body: `message=現在${(users._sum.numberOnThirteenth || 0)}人が13日の入場を予約しました`,
-      });
-    }
+    // if ((eachLimit-1 <= (users._sum.numberOnTwelfth || 0)) && ((users._sum.numberOnTwelfth || 0) <= eachLimit+5)) {
+    //   await fetch('https://notify-api.line.me/api/notify', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //       'Authorization': `Bearer ${process.env.LINE_NOTIFY_TOKEN}`,
+    //     },
+    //     body: `message=現在${(users._sum.numberOnTwelfth || 0)}人が12日の入場を予約しました"}"`,
+    //   });
+    // }
+    // if ((eachLimit-1 <= (users._sum.numberOnThirteenth || 0)) && ((users._sum.numberOnThirteenth || 0) <= eachLimit+5)) {
+    //   await fetch('https://notify-api.line.me/api/notify', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //       'Authorization': `Bearer ${process.env.LINE_NOTIFY_TOKEN}`,
+    //     },
+    //     body: `message=現在${(users._sum.numberOnThirteenth || 0)}人が13日の入場を予約しました`,
+    //   });
+    // }
     if ((users._sum.numberOnEleventh || 0) > eachLimit || (users._sum.numberOnTwelfth || 0) > eachLimit || (users._sum.numberOnThirteenth || 0) > eachLimit) {
       throw new Error('上限を超えています')
     }
