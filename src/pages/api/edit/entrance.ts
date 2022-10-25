@@ -29,7 +29,9 @@ const getStock = async (user: any) => {
 const patchEntrance = async (token: any, data: any) => {
   const { sub } = token;
   let { eleventh, twelfth, thirteenth, accompaniers } = data;
-
+  let userEleventhNum = 0;
+  let userTwelfthNum = 0;
+  let userThirteenthNum = 0;
   if (checkUserType(token) === 'nokodaisei') {
     eleventh = [0, 1, 2].includes(eleventh) ? eleventh : 0;
     twelfth = [0, 1, 2].includes(twelfth) ? twelfth : 0;
@@ -40,11 +42,11 @@ const patchEntrance = async (token: any, data: any) => {
     twelfth = [0, 1].includes(twelfth) ? twelfth : 0;
     thirteenth = [0, 1].includes(thirteenth) ? thirteenth : 0;
     accompaniers = !(eleventh||twelfth||thirteenth) ? 0 : [0,1,2,3,4].includes(accompaniers) ? accompaniers : 0;
+    userEleventhNum = eleventh==1 ? 1 + accompaniers : 0;
+    userTwelfthNum = twelfth==1 ? 1 + accompaniers : 0;
+    userThirteenthNum = thirteenth==1 ? 1 + accompaniers : 0;
   }
   
-  const userEleventhNum = eleventh==1 ? 1 + accompaniers : 0;
-  const userTwelfthNum = twelfth==1 ? 1 + accompaniers : 0;
-  const userThirteenthNum = thirteenth==1 ? 1 + accompaniers : 0;
   
   // トランザクション処理
   return await client.$transaction(async (tx) => {
