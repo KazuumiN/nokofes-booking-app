@@ -34,13 +34,13 @@ const EntranceEdit = () => {
   ))
 
   const optionsEleventh = [0,1,2].map((i) => (
-    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.eleventh < 1)}
+    { value: i, label: entranceVisitType(i) }
   ))
   const optionsTwelfth = [0,1,2].map((i) => (
-    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.twelfth < 1)}
+    { value: i, label: entranceVisitType(i) }
   ))
   const optionsThirteenth = [0,1,2].map((i) => (
-    { value: i, label: entranceVisitType(i), isDisabled: (i==1 && data.stock.thirteenth < 1)}
+    { value: i, label: entranceVisitType(i) }
   ))
 
   const cancel = () => {
