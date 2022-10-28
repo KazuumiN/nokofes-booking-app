@@ -220,7 +220,7 @@ const ShoppingForm = () => {
           />
         }
       </div>
-      {!(noBeerStock && noMisonyuStock) &&
+      {/* {!(noBeerStock && noMisonyuStock) &&
         <section
           aria-labelledby="summary-heading"
           className="mt-8 rounded-lg bg-gray-50 px-4 py-6"
@@ -251,7 +251,7 @@ const ShoppingForm = () => {
             </button>
           </div>
         </section>
-      }
+      } */}
 
       <div className="mt-3 text-center text-sm">
         <button

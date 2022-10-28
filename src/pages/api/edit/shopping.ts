@@ -217,15 +217,15 @@ const shoppingApi = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(401)
       }
       return 
-    case 'PATCH':
-      if (token) {
-        const user = await patchShopping(token, req.body)
-        res.status(200).json(user)
-      } else {
-        // サインインしていない
-        res.status(401)
-      }
-      return
+    // case 'PATCH':
+    //   if (token) {
+    //     const user = await patchShopping(token, req.body)
+    //     res.status(200).json(user)
+    //   } else {
+    //     // サインインしていない
+    //     res.status(401)
+    //   }
+    //   return
     default:
       res.status(405).end()
       break
