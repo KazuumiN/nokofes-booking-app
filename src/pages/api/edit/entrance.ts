@@ -90,6 +90,7 @@ const patchEntrance = async (token: any, data: any) => {
         body: `message=現在の予約\n11日：${(users._sum.numberOnEleventh || 0)}人\n12日：${(users._sum.numberOnTwelfth || 0)}人\n13日：${(users._sum.numberOnThirteenth || 0)}人`,
       });
     }
+    console.info(user)
     if ((users._sum.numberOnEleventh || 0) > eachLimit || (users._sum.numberOnTwelfth || 0) > eachLimit || (users._sum.numberOnThirteenth || 0) > eachLimit) {
       throw new Error('上限を超えています')
     }
