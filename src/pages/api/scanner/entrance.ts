@@ -2,15 +2,16 @@ import client from "lib/prismadb"
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { body, method } = req;
+  const { method, query } = req;
   switch (method) {
-    case 'POST':
+    case 'GET':
+      console.log(`id: ${query.id}`)
       // TODO: temp_data
       res.status(200).json({
         eleventh: 1,
-        twelfth: 1,
-        thirteenth: 1,
-        accompaniers: 1
+        twelfth: 2,
+        thirteenth: 0,
+        accompaniers: 2
       })
       
       // まずはユーザーデータを返す
