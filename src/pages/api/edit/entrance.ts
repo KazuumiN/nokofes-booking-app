@@ -5,7 +5,7 @@ import checkUserType from "lib/api/checkUserType"
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // 各日の一般の入場者数上限
-const eachLimit = 2801
+const eachLimit = Number(process.env.EACH_LIMIT)
 
 const getStock = async (user: any) => {
   const users = await client.attendee.aggregate({
