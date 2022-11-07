@@ -5,20 +5,47 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method, query } = req;
   switch (method) {
     case 'GET':
-      console.log(`id: ${query.id}`)
-      // TODO: temp_data
+      console.log('GET')
+      const id = query.id as string;
+      const type = query.type as string;
+      const place = query.place as string;
+      const user = type === 'number'
+        ? await client.attendee.findFirst({
+            where: { numberId: id },
+            select: {
+              id: true,
+              eleventh: true,
+              twelfth: true,
+              thirteenth: true,
+              accompaniers: true,
+            },
+          })
+        : await client.attendee.findFirst({
+            where: { longerId: id },
+            select: {
+              id: true,
+              eleventh: true,
+              twelfth: true,
+              thirteenth: true,
+              accompaniers: true,
+            },
+          });
+      if (!user) {
+        res.status(404).json({ message: 'not found' });
+        return;
+      }
       res.status(200).json({
-        eleventh: 1,
-        twelfth: 2,
-        thirteenth: 0,
-        accompaniers: 2
+        eleventh: user.eleventh,
+        twelfth: user.twelfth,
+        thirteenth: user.thirteenth,
+        accompaniers: user.accompaniers,
       })
-      
-      // まずはユーザーデータを返す
-      // const userInfo = await getInfo(body)
-      // res.status(200).json(userInfo)
-      // GASに保存
-      // await postGas(body)
+      await client.actual.create({
+        data: {
+          attendeeId: user.id,
+          place: place,
+        },
+      })
       return
     default:
       res.status(405).end()
@@ -26,43 +53,6 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-type postProps = {
-  id: string,
-  type?: 'longer' | 'number',
-  place?: 'seimon' | 'yongokan'
-}
 
-const getInfo = async ({id, type}: postProps) => {
-  // DBからユーザーを取得
-  const query = type === 'number' ? { numberId: id } : { longerId: id }
-  const user = await client.attendee.findFirst({
-    where: query,
-    select: {
-      id: true,
-      eleventh: true,
-      twelfth: true,
-      thirteenth: true,
-      accompaniers: true
-    }
-  })
-  return {...user}
-}
-
-const postGas = async ({id, place}: postProps) => {
-  // GASに保存
-  let status = 0
-  let counter = 0
-  // エラーの場合は10回再試行するループ
-  while ((counter < 10) && (status != 200)) {
-    const res = await fetch(`${process.env.GAS_ENDPOINT_FOR_SCANNER}?id=${id}&place=${place}`)
-    // statusをcheck
-    status = res.status;
-    counter ++
-  }
-  // 10回超えたらエラーをconsoleに置いとく（流石にないと思うけど）
-  if (counter<10) {
-    console.log(`error in recording ${id}`)
-  }
-}
 
 export default scanEntranceApi
