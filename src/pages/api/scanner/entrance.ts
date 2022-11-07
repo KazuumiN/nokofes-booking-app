@@ -5,6 +5,7 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method, query } = req;
   switch (method) {
     case 'GET':
+      res.setHeader('Access-Control-Allow-Origin', '*');
       console.log('GET')
       const id = query.id as string;
       const type = query.type as string;
