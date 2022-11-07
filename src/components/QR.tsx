@@ -1,17 +1,20 @@
-import { QRImage } from 'react-qrbtf';
+import { QRImage, QRNormal } from 'react-qrbtf';
 
 
 
 const QR = ({id}: {id: string}) => {
   return (
     <div className="h-2/3">
-      <QRImage
+      {/* <QRImage
         value={id}
         image={imageData}
         level="H"
         type="round"
         size={150}
         posType="round"
+      /> */}
+      <QRNormal
+        value={id}
       />
     </div>
   )
