@@ -20,7 +20,6 @@ const Home: NextPage = () => {
       {entranceReserved && (
         <NumberAndQR numberId={data.numberId} longerId={data.longerId} />
       )}
-      <p className="text-xl mt-4 mb-1">QRコードが上の画像です。<br />各種予約内容の{entranceReserved ? '確認': '申し込み'}は<br/>以下からお願いします</p>
       <div>
         <div className="flex justify-between px-3 space-x-2">
           <Link href={entranceReserved ? "/entrance" : "/entrance/edit"} >
