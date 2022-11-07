@@ -77,4 +77,14 @@ model Attendee {
   miso Int @default(0)
   lactic Int @default(0)
   whenToBuy Int @default(0)
+  // 実際の記録など
+  actualEntrance Actual[]
+}
+
+model Actual {
+  id String @id @default(cuid())
+  place String
+  attendeeId String
+  timePassed DateTime @default(now())
+  attendee Attendee @relation(fields: [attendeeId], references: [id])
 }

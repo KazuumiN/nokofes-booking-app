@@ -31,6 +31,11 @@ const Layout: NextPage<{ children: ReactNode }> = ({
     return <div className=" text-center">読み込み中...</div>
   }
 
+  // スキャナー使用時には認証を不要にする
+  if (router.pathname.startsWith('/scanner')) {
+    return (<>{children}</>)
+  }
+
   if (router.pathname === '/verify-request') {
     // 認証メールを送りました画面
     return (
