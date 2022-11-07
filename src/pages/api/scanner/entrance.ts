@@ -6,7 +6,6 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case 'GET':
       res.setHeader('Access-Control-Allow-Origin', '*');
-      console.log('GET')
       const id = query.id as string;
       const type = query.type as string;
       const place = query.place as string;
@@ -35,17 +34,17 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(404).json({ message: 'not found' });
         return;
       }
+      client.actual.create({
+        data: {
+          attendeeId: user.id,
+          place: place,
+        },
+      })
       res.status(200).json({
         eleventh: user.eleventh,
         twelfth: user.twelfth,
         thirteenth: user.thirteenth,
         accompaniers: user.accompaniers,
-      })
-      await client.actual.create({
-        data: {
-          attendeeId: user.id,
-          place: place,
-        },
       })
       return
     default:
