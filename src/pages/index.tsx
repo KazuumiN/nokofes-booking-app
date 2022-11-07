@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 
   // 予約開始後
   return (
-    <div className="flex flex-col justify-around h-screen text-center pt-2">
+    <div className="flex flex-col space-y-8 text-center pt-2">
       <h1 className="text-3xl font-bold font-hina mt-4 pt-3">農工祭予約システム</h1>
       {entranceReserved && (
         <NumberAndQR numberId={data.numberId} longerId={data.longerId} />
