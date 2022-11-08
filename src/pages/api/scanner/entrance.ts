@@ -12,7 +12,7 @@ const scanEntranceApi = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(200).json({
           onTheDayApplication: true,
         })
-        await client.actual.create({
+        await client.actualOnTheDay.create({
           data: {
             attendeeId: id,
             place: place,
