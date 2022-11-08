@@ -6,6 +6,7 @@ const nextConfig = {
     domains: [
       'lh3.googleusercontent.com',
       "source.unsplash.com",
+      'images.microcms-assets.io',
     ],
   },
 }
