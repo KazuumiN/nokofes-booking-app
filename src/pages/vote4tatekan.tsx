@@ -45,8 +45,9 @@ export default function Index({images}: {images:Array<string>}) {
   useEffect(() => {
     const getVote = async () => {
       const res = await fetch('/api/vote4tatekan').then((res) => res.json());
-      setSelected(res.currentVote);
-      oldSelected.current = res.currentVote;
+      const currentVote = res.currentVote ? res.currentVote : '';
+      setSelected(currentVote);
+      oldSelected.current = currentVote;
     }
     getVote();
   },[])
