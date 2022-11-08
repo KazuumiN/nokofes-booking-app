@@ -1,3 +1,6 @@
+// 参考にしたコード
+// https://codesandbox.io/s/71f3j
+
 import { useEffect, useState, useRef } from "react";
 import VisibilitySensor from "react-visibility-sensor";
 import client from "lib/microCMS"
