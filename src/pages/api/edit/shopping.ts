@@ -15,30 +15,36 @@ const stock = {
 const whenToBuyLimit = 60
 
 const getStock = async (order: any) => {
-  const { original, sour, miso, lactic } = order;
+  // const { original, sour, miso, lactic } = order;
   
 
-  // 注文を取得
-  const orderedCount = await client.attendee.aggregate({
-    _sum: {
-      original: true,
-      sour: true,
-      miso: true,
-      lactic: true,
-    }
-  })
+  // // 注文を取得
+  // const orderedCount = await client.attendee.aggregate({
+  //   _sum: {
+  //     original: true,
+  //     sour: true,
+  //     miso: true,
+  //     lactic: true,
+  //   }
+  // })
 
-  // 自分の注文分も合わせてstockに足す
-  const stockOriginal = stock.original + original - (orderedCount._sum.original || 0)
-  const stockSour = stock.sour + sour - (orderedCount._sum.sour || 0)
-  const stockMiso = stock.miso + miso - (orderedCount._sum.miso || 0)
-  const stockLactic = stock.lactic + lactic - (orderedCount._sum.lactic || 0)
+  // // 自分の注文分も合わせてstockに足す
+  // const stockOriginal = stock.original + original - (orderedCount._sum.original || 0)
+  // const stockSour = stock.sour + sour - (orderedCount._sum.sour || 0)
+  // const stockMiso = stock.miso + miso - (orderedCount._sum.miso || 0)
+  // const stockLactic = stock.lactic + lactic - (orderedCount._sum.lactic || 0)
 
+  // return {
+  //   original: stockOriginal,
+  //   sour: stockSour,
+  //   miso: stockMiso,
+  //   lactic: stockLactic,
+  // }
   return {
-    original: stockOriginal,
-    sour: stockSour,
-    miso: stockMiso,
-    lactic: stockLactic,
+    original: 0,
+    sour: 0,
+    miso: 0,
+    lactic: 0,
   }
 }
 
