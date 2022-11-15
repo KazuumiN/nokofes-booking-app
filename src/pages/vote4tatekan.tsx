@@ -70,18 +70,15 @@ export default function Index({images}: {images:Array<string>}) {
     }).then((res) => {
       if (res.status === 200) {
           toast.update(id, {
-            render: '投票しました！5秒後にページが移動するのでアンケートにもご協力ください。',
+            render: 'タテカン大賞に投票しました！模擬店大賞にも投票をお願いします',
             type: "success",
             isLoading: false,
             position: 'bottom-center',
             draggable: true,
-            autoClose: 5000,
+            autoClose: 3000,
             closeOnClick: true,
         })
-        // 5秒待って、Googleフォームに遷移
-        setTimeout(() => {
-          router.push('https://docs.google.com/forms/d/e/1FAIpQLSdv528ejWcB0jpHHUuFaYIYBjXIcfwwGqjCKrB5n-h31gzVdQ/viewform')
-        }, 5000)
+        router.push('/vote4mogi');
       } else {
         toast.update(id, {
           render: 'エラーが発生したため再読み込みしました。連続して発生する場合、しばらく時間をおいてから再度お試しください。',

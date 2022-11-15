@@ -80,6 +80,7 @@ model Attendee {
   // 実際の記録など
   actualEntrance Actual[]
   vote VoteTatekan?
+  voteMogi VoteMogi?
 }
 
 model Actual {
@@ -99,6 +100,14 @@ model ActualOnTheDay {
 }
 
 model VoteTatekan {
+  id String @id @default(cuid())
+  attendeeId String @unique
+  vote String
+  timeVoted DateTime @updatedAt @default(now())
+  attendee Attendee @relation(fields: [attendeeId], references: [id])
+}
+
+model VoteMogi {
   id String @id @default(cuid())
   attendeeId String @unique
   vote String
