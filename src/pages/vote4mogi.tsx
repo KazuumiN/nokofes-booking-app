@@ -92,7 +92,7 @@ export default function Index({mogis}: {mogis:Array<{name: string, menu: string}
         <h1 className="text-3xl">模擬店投票</h1>
         <p className="text-lg">　あなたがいいと思った模擬店を<br/>選んでください！</p>
       </div>
-      <div className="grid grid-cols-2 gap-1">
+      <div className="grid grid-cols-2 gap-1 mb-6">
         {mogis &&
           mogis.map((mogi, index) => (
             <MogiCard
