@@ -62,20 +62,16 @@ export default function Index({mogis}: {mogis:Array<{name: string, menu: string}
       })
     }).then((res) => {
       if (res.status === 200) {
-          toast.update(id, {
-            render: '投票しました！5秒後にページが移動するのでアンケートにもご協力ください。',
-            type: "success",
-            isLoading: false,
-            position: 'bottom-center',
-            pauseOnHover: false,
-            draggable: false,
-            autoClose: 5000,
-            closeOnClick: false,
-        })
-        // 5秒待って、Googleフォームに遷移
-        setTimeout(() => {
-          router.push('https://docs.google.com/forms/d/e/1FAIpQLSdv528ejWcB0jpHHUuFaYIYBjXIcfwwGqjCKrB5n-h31gzVdQ/viewform')
-        }, 5000)
+        toast.update(id, {
+          render: '模擬店大賞に投票しました！ありがとうございました！',
+          type: "success",
+          isLoading: false,
+          position: 'bottom-center',
+          draggable: true,
+          autoClose: 3000,
+          closeOnClick: true,
+      })
+      router.push('/');
       } else {
         toast.update(id, {
           render: 'エラーが発生したため再読み込みしました。連続して発生する場合、しばらく時間をおいてから再度お試しください。',
