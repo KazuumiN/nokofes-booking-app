@@ -24,7 +24,7 @@ const Home: NextPage = () => {
         <Link href="/vote4tatekan" >
           <a className="mb-5 bg-green-500 hover:bg-green-700 text-white text-2xl font-bold py-4 px-8 rounded whitespace-pre-wrap"
           >
-            タテカン大賞＆模擬店大賞投票はこちら！
+            {"タテカン＆模擬店大賞\nの投票はこちら！"}
           </a>
         </Link>
         <div className="flex justify-between px-3 space-x-2">
